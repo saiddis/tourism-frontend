@@ -1,0 +1,17 @@
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: tourism-frontend
+    ports:
+      - '3000:3000'
+    environment:
+      - API_URL=http://tourism-backend:8080
+    networks:
+      - tourism-network
+    restart: unless-stopped
+
+networks:
+  tourism-network:
+    external: true

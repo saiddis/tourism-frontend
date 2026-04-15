@@ -3,7 +3,7 @@
 	import favicon from '$lib/assets/favicon.svg';
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
-	import { clearAuthData } from '$lib/api/client.js';
+	import { api } from '$lib/api/client.js';
 
 	/** @type {import('./$types').LayoutProps} */
 	let { data, children } = $props();
@@ -11,8 +11,8 @@
 	const isAuthenticated = $derived(data?.user != null);
 	const currentPath = $derived($page.url.pathname);
 
-	function handleLogout() {
-		clearAuthData();
+	async function handleLogout() {
+		await api.auth.logout();
 		goto('/', { replaceState: true });
 	}
 </script>

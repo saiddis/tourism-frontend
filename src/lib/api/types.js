@@ -15,7 +15,7 @@
  * @typedef {Object} Destination
  * @property {number} id
  * @property {string} name
- * @property {string} image_url
+ * @property {string | undefined} [image_url]
  * @property {string} description
  * @property {string} created_at
  */
@@ -72,7 +72,6 @@
 /**
  * @typedef {Object} AuthTokens
  * @property {string} access_token
- * @property {string} refresh_token
  * @property {string} token_type
  * @property {number} access_expires_in
  * @property {number} refresh_expires_in

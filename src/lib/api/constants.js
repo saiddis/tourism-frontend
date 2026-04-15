@@ -5,10 +5,12 @@ export const Endpoints = {
 	auth: {
 		register: '/auth/register',
 		login: '/auth/login',
-		refresh: '/auth/refresh'
+		refresh: '/auth/refresh',
+		logout: '/auth/logout'
 	},
 	users: {
 		list: '/users',
+		me: '/users/me',
 		/** @param {number|string} id */
 		get: (id) => `/users/${id}`
 	},

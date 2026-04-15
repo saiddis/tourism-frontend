@@ -13,10 +13,13 @@ RUN bun run build
 # Stage 2: serve with nginx
 FROM nginx:alpine
 
-# copy built files (adjust if your build folder is different)
+# remove default nginx config (optional but cleaner)
+RUN rm /etc/nginx/conf.d/default.conf
+
+# copy built static files
 COPY --from=builder /app/dist /usr/share/nginx/html
 
-# custom nginx config (important for SPA)
+# nginx config for SPA
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 8080

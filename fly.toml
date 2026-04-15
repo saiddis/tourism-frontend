@@ -6,10 +6,11 @@
 app = 'tourism-frontend'
 primary_region = 'bom'
 
-[build]
+[env]
+  PORT = "8080"
 
 [http_service]
-  internal_port = 433
+  internal_port = 8080
   force_https = true
   auto_stop_machines = 'stop'
   auto_start_machines = true
@@ -17,7 +18,7 @@ primary_region = 'bom'
   processes = ['app']
 
 [[vm]]
-  memory = '1gb'
-  cpu_kind = 'shared'
+  memory = "256mb"
+  cpu_kind = "shared"
   cpus = 1
   memory_mb = 256

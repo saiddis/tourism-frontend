@@ -2,7 +2,7 @@
 	import './layout.css';
 	import favicon from '$lib/assets/favicon.svg';
 	import { page } from '$app/stores';
-	import { goto } from '$app/navigation';
+	import { goto, invalidateAll } from '$app/navigation';
 	import { api } from '$lib/api/client.js';
 
 	/** @type {import('./$types').LayoutProps} */
@@ -12,7 +12,19 @@
 	const currentPath = $derived($page.url.pathname);
 
 	async function handleLogout() {
-		await api.auth.logout();
+		try {
+			await api.auth.logout();
+		} catch {
+			// Local auth state is already cleared in the client even if the network request fails.
+		}
+
+		await invalidateAll();
+
+		if (typeof window !== 'undefined') {
+			window.location.replace('/');
+			return;
+		}
+
 		goto('/', { replaceState: true });
 	}
 </script>
@@ -74,6 +86,7 @@
 							>
 							<button
 								onclick={handleLogout}
+								type="button"
 								class="text-sm font-medium transition-colors hover:text-primary">Logout</button
 							>
 						</div>

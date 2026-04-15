@@ -24,19 +24,22 @@
 
 <div>
 	<!-- Hero Section -->
-	<section
-		class="relative overflow-hidden bg-gradient-to-br from-primary/10 via-background to-secondary/10"
-	>
-		<div
-			class="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(59,130,246,0.1),transparent_50%)]"
-		></div>
+	<section class="relative min-h-[600px] overflow-hidden">
+		<div class="absolute inset-0">
+			<img
+				src="https://images.unsplash.com/photo-1506929562872-bb421503ef21?w=1920&h=1080&fit=crop"
+				alt="Beautiful tropical beach destination"
+				class="h-full w-full object-cover"
+			/>
+			<div class="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-black/70"></div>
+		</div>
 		<div class="relative container mx-auto px-4 py-20 md:py-32">
 			<div class="max-w-3xl">
-				<h1 class="mb-6 font-heading text-4xl font-bold tracking-tight md:text-6xl">
+				<h1 class="mb-6 font-heading text-4xl font-bold tracking-tight text-white md:text-6xl">
 					Discover Your Next
 					<span class="block text-primary">Extraordinary Journey</span>
 				</h1>
-				<p class="mb-8 max-w-xl text-lg text-muted-foreground md:text-xl">
+				<p class="mb-8 max-w-xl text-lg text-white/80 md:text-xl">
 					Explore breathtaking destinations, book curated tours, and create unforgettable memories
 					with The Curated Horizon.
 				</p>
@@ -60,7 +63,7 @@
 					</a>
 					<a
 						href="/destinations"
-						class="inline-flex items-center justify-center gap-2 rounded-md border border-input bg-background px-6 py-3 font-medium transition-colors hover:bg-accent"
+						class="inline-flex items-center justify-center gap-2 rounded-md border border-white/30 bg-white/10 px-6 py-3 font-medium text-white backdrop-blur-sm transition-colors hover:bg-white/20"
 					>
 						Browse Destinations
 					</a>
@@ -70,77 +73,101 @@
 	</section>
 
 	<!-- Features Section -->
-	<section class="border-b py-16">
+	<section class="border-b bg-muted/30 py-16">
 		<div class="container mx-auto px-4">
 			<div class="grid grid-cols-1 gap-8 md:grid-cols-3">
-				<div class="p-6 text-center">
-					<div
-						class="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10"
-					>
-						<svg
-							class="h-6 w-6 text-primary"
-							viewBox="0 0 24 24"
-							fill="none"
-							stroke="currentColor"
-							stroke-width="2"
-							stroke-linecap="round"
-							stroke-linejoin="round"
+				<div class="relative overflow-hidden rounded-xl p-6 text-center">
+					<img
+						src="https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=600&h=400&fit=crop"
+						alt="Curated destinations"
+						class="absolute inset-0 h-full w-full object-cover"
+					/>
+					<div class="absolute inset-0 bg-black/60"></div>
+					<div class="relative">
+						<div
+							class="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-white/20 backdrop-blur-sm"
 						>
-							<circle cx="12" cy="12" r="10" />
-							<path d="M2 12h20M12 2a14.14 14.14 0 0 1 0 20 14.14 14.14 0 0 1 0-20" />
-						</svg>
+							<svg
+								class="h-6 w-6 text-white"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="2"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+							>
+								<circle cx="12" cy="12" r="10" />
+								<path d="M2 12h20M12 2a14.14 14.14 0 0 1 0 20 14.14 14.14 0 0 1 0-20" />
+							</svg>
+						</div>
+						<h3 class="mb-2 text-lg font-semibold text-white">Curated Destinations</h3>
+						<p class="text-sm text-white/80">
+							Hand-picked locations that offer unique and memorable experiences.
+						</p>
 					</div>
-					<h3 class="mb-2 text-lg font-semibold">Curated Destinations</h3>
-					<p class="text-sm text-muted-foreground">
-						Hand-picked locations that offer unique and memorable experiences.
-					</p>
 				</div>
-				<div class="p-6 text-center">
-					<div
-						class="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10"
-					>
-						<svg
-							class="h-6 w-6 text-primary"
-							viewBox="0 0 24 24"
-							fill="none"
-							stroke="currentColor"
-							stroke-width="2"
-							stroke-linecap="round"
-							stroke-linejoin="round"
+				<div class="relative overflow-hidden rounded-xl p-6 text-center">
+					<img
+						src="https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=600&h=400&fit=crop"
+						alt="Expert planning"
+						class="absolute inset-0 h-full w-full object-cover"
+					/>
+					<div class="absolute inset-0 bg-black/60"></div>
+					<div class="relative">
+						<div
+							class="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-white/20 backdrop-blur-sm"
 						>
-							<path
-								d="m3 16 4 4 4-4M7 20V4M17 20V4M21 12l-3-3-3 3M3 12l3-3 3 3M21 12l-2.5-2.5M3 12l2.5-2.5M20.5 9.5 17 6M3.5 9.5 7 6M20.5 14.5 17 18M3.5 14.5 7 18"
-							/>
-						</svg>
+							<svg
+								class="h-6 w-6 text-white"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="2"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+							>
+								<path
+									d="m3 16 4 4 4-4M7 20V4M17 20V4M21 12l-3-3-3 3M3 12l3-3 3 3M21 12l-2.5-2.5M3 12l2.5-2.5M20.5 9.5 17 6M3.5 9.5 7 6M20.5 14.5 17 18M3.5 14.5 7 18"
+								/>
+							</svg>
+						</div>
+						<h3 class="mb-2 text-lg font-semibold text-white">Expert Planning</h3>
+						<p class="text-sm text-white/80">
+							Every detail of your journey is thoughtfully arranged.
+						</p>
 					</div>
-					<h3 class="mb-2 text-lg font-semibold">Expert Planning</h3>
-					<p class="text-sm text-muted-foreground">
-						Every detail of your journey is thoughtfully arranged.
-					</p>
 				</div>
-				<div class="p-6 text-center">
-					<div
-						class="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10"
-					>
-						<svg
-							class="h-6 w-6 text-primary"
-							viewBox="0 0 24 24"
-							fill="none"
-							stroke="currentColor"
-							stroke-width="2"
-							stroke-linecap="round"
-							stroke-linejoin="round"
+				<div class="relative overflow-hidden rounded-xl p-6 text-center">
+					<img
+						src="https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=600&h=400&fit=crop"
+						alt="Seamless experience"
+						class="absolute inset-0 h-full w-full object-cover"
+					/>
+					<div class="absolute inset-0 bg-black/60"></div>
+					<div class="relative">
+						<div
+							class="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-white/20 backdrop-blur-sm"
 						>
-							<path
-								d="M20 8V6c0-2.5-2-4.5-4.5-4.5S11 3.5 11 6v2M17 6c0-2.5-2-4.5-4.5-4.5S8 3.5 8 6v2M4 10v8c0 2.5 2 4.5 4.5 4.5h7c2.5 0 4.5-2 4.5-4.5V10"
-							/>
-							<path d="M4 10V8c0-2.5 2-4.5 4.5-4.5h7c2.5 0 4.5 2 4.5 4.5v2" />
-						</svg>
+							<svg
+								class="h-6 w-6 text-white"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="2"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+							>
+								<path
+									d="M20 8V6c0-2.5-2-4.5-4.5-4.5S11 3.5 11 6v2M17 6c0-2.5-2-4.5-4.5-4.5S8 3.5 8 6v2M4 10v8c0 2.5 2 4.5 4.5 4.5h7c2.5 0 4.5-2 4.5-4.5V10"
+								/>
+								<path d="M4 10V8c0-2.5 2-4.5 4.5-4.5h7c2.5 0 4.5 2 4.5 4.5v2" />
+							</svg>
+						</div>
+						<h3 class="mb-2 text-lg font-semibold text-white">Seamless Experience</h3>
+						<p class="text-sm text-white/80">
+							From booking to your return, enjoy a stress-free adventure.
+						</p>
 					</div>
-					<h3 class="mb-2 text-lg font-semibold">Seamless Experience</h3>
-					<p class="text-sm text-muted-foreground">
-						From booking to your return, enjoy a stress-free adventure.
-					</p>
 				</div>
 			</div>
 		</div>
@@ -282,48 +309,48 @@
 	{/if}
 
 	<!-- Empty States -->
-	{#if featuredDestinations.length === 0 && featuredTours.length === 0}
-		<section class="py-20">
-			<div class="container mx-auto px-4 text-center">
-				<div class="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-muted">
-					<svg
-						class="h-8 w-8 text-muted-foreground"
-						viewBox="0 0 24 24"
-						fill="none"
-						stroke="currentColor"
-						stroke-width="2"
-						stroke-linecap="round"
-						stroke-linejoin="round"
-					>
-						<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0Z" />
-						<circle cx="12" cy="10" r="3" />
-					</svg>
-				</div>
-				<h2 class="mb-2 font-heading text-2xl font-bold">Start Your Journey</h2>
-				<p class="mx-auto mb-6 max-w-md text-muted-foreground">
-					Our platform is ready to help you discover amazing destinations and book unforgettable
-					tours.
-				</p>
-				<a
-					href="/register"
-					class="inline-flex items-center gap-2 rounded-md bg-primary px-6 py-3 font-medium text-primary-foreground transition-colors hover:bg-primary/90"
-				>
-					Create an Account
-					<svg
-						class="h-4 w-4"
-						viewBox="0 0 24 24"
-						fill="none"
-						stroke="currentColor"
-						stroke-width="2"
-						stroke-linecap="round"
-						stroke-linejoin="round"
-					>
-						<path d="M5 12h14M12 5l7 7-7 7" />
-					</svg>
-				</a>
-			</div>
-		</section>
-	{/if}
+	<!-- {#if featuredDestinations.length === 0 && featuredTours.length === 0} -->
+	<!-- 	<section class="py-20"> -->
+	<!-- 		<div class="container mx-auto px-4 text-center"> -->
+	<!-- 			<div class="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-muted"> -->
+	<!-- 				<svg -->
+	<!-- 					class="h-8 w-8 text-muted-foreground" -->
+	<!-- 					viewBox="0 0 24 24" -->
+	<!-- 					fill="none" -->
+	<!-- 					stroke="currentColor" -->
+	<!-- 					stroke-width="2" -->
+	<!-- 					stroke-linecap="round" -->
+	<!-- 					stroke-linejoin="round" -->
+	<!-- 				> -->
+	<!-- 					<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0Z" /> -->
+	<!-- 					<circle cx="12" cy="10" r="3" /> -->
+	<!-- 				</svg> -->
+	<!-- 			</div> -->
+	<!-- 			<h2 class="mb-2 font-heading text-2xl font-bold">Start Your Journey</h2> -->
+	<!-- 			<p class="mx-auto mb-6 max-w-md text-muted-foreground"> -->
+	<!-- 				Our platform is ready to help you discover amazing destinations and book unforgettable -->
+	<!-- 				tours. -->
+	<!-- 			</p> -->
+	<!-- 			<a -->
+	<!-- 				href="/register" -->
+	<!-- 				class="inline-flex items-center gap-2 rounded-md bg-primary px-6 py-3 font-medium text-primary-foreground transition-colors hover:bg-primary/90" -->
+	<!-- 			> -->
+	<!-- 				Create an Account -->
+	<!-- 				<svg -->
+	<!-- 					class="h-4 w-4" -->
+	<!-- 					viewBox="0 0 24 24" -->
+	<!-- 					fill="none" -->
+	<!-- 					stroke="currentColor" -->
+	<!-- 					stroke-width="2" -->
+	<!-- 					stroke-linecap="round" -->
+	<!-- 					stroke-linejoin="round" -->
+	<!-- 				> -->
+	<!-- 					<path d="M5 12h14M12 5l7 7-7 7" /> -->
+	<!-- 				</svg> -->
+	<!-- 			</a> -->
+	<!-- 		</div> -->
+	<!-- 	</section> -->
+	<!-- {/if} -->
 
 	<!-- CTA Section -->
 	{#if !data.user}

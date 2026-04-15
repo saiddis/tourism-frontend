@@ -5,10 +5,10 @@ primary_region = "bom"
   dockerfile = "Dockerfile"
 
 [env]
-  PORT = "433"
+  PORT = "8080"
 
 [http_service]
-  internal_port = 433
+  internal_port = 8080
   force_https = true
   auto_stop_machines = true
   auto_start_machines = true
@@ -16,6 +16,6 @@ primary_region = "bom"
   processes = ["app"]
 
 [[vm]]
-  memory = "256md"
+  memory = "256mb"
   cpu_kind = "shared"
   cpus = 1

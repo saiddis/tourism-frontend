@@ -2,7 +2,7 @@
 	let { data } = $props();
 </script>
 
-<svelte:head><title>Destinations | Horizon</title></svelte:head>
+<svelte:head><title>Destinations | The Curated Horizon</title></svelte:head>
 
 <div class="container mx-auto px-4 py-8">
 	<div class="mb-8">

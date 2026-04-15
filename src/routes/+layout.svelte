@@ -38,7 +38,7 @@
 							<path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" />
 							<path d="M2 12h20" />
 						</svg>
-						<span class="hidden sm:inline">Horizon</span>
+						<span class="hidden sm:inline">The Curated Horizon</span>
 					</a>
 					<div class="hidden items-center gap-6 md:flex">
 						<a
@@ -112,7 +112,7 @@
 							<path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" />
 							<path d="M2 12h20" />
 						</svg>
-						Horizon
+						The Curated Horizon
 					</div>
 					<p class="max-w-md text-sm text-muted-foreground">
 						Discover extraordinary destinations and create unforgettable travel memories with our
@@ -144,7 +144,7 @@
 				</div>
 			</div>
 			<div class="mt-8 border-t pt-8 text-center text-sm text-muted-foreground">
-				<p>© 2026 Horizon. All rights reserved.</p>
+				<p>© 2026 The Curated Horizon. All rights reserved.</p>
 			</div>
 		</div>
 	</footer>

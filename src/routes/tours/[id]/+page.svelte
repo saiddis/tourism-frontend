@@ -85,7 +85,7 @@
 	}
 </script>
 
-<svelte:head><title>{data.tour?.name || 'Tour'} | Horizon</title></svelte:head>
+<svelte:head><title>{data.tour?.name || 'Tour'} | The Curated Horizon</title></svelte:head>
 
 <div class="container mx-auto px-4 py-8">
 	<!-- Breadcrumb -->

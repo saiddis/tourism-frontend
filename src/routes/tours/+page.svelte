@@ -25,7 +25,8 @@
 </script>
 
 <svelte:head
-	><title>{data.destination ? `Tours in ${data.destination.name}` : 'Tours'} | Horizon</title
+	><title
+		>{data.destination ? `Tours in ${data.destination.name}` : 'Tours'} | The Curated Horizon</title
 	></svelte:head
 >
 

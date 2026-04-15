@@ -10,31 +10,27 @@ export async function load() {
 	}
 
 	try {
-		const [bookings, tours, destinations] = await Promise.all([
-			api.bookings.getUserBookings(user.id),
-			api.tours.list(),
-			api.destinations.list()
-		]);
+		const response = await api.bookings.getUserBookings(user.id);
+		let bookings = [];
 
-		const enrichedBookings = bookings.map((booking) => {
-			const tour = tours.find((t) => t.id === booking.tour_id);
-			const destination = tour ? destinations.find((d) => d.id === tour.destination_id) : null;
-			return {
-				...booking,
-				tour,
-				destination
-			};
-		});
+		if (response) {
+			if (Array.isArray(response)) {
+				bookings = response;
+			} else if (typeof response === 'object') {
+				bookings = Object.values(response);
+			}
+		}
 
 		return {
-			bookings: enrichedBookings,
+			bookings,
 			user
 		};
-	} catch (error) {
+	} catch (/** @type {any} */ err) {
+		console.error('Failed to load bookings:', err);
 		return {
 			bookings: [],
 			user,
-			error: error.message
+			error: err?.message || 'Failed to load bookings'
 		};
 	}
 }

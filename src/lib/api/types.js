@@ -24,6 +24,9 @@
  * @typedef {Object} Tour
  * @property {number} id
  * @property {number} destination_id
+ * @property {string | undefined} [destination_name]
+ * @property {string | undefined} [destination_description]
+ * @property {string | undefined} [destination_image_url]
  * @property {string} name
  * @property {string} description
  * @property {number} price
@@ -42,6 +45,16 @@
  * @property {number} id
  * @property {number} user_id
  * @property {number} tour_id
+ * @property {string | undefined} [tour_name]
+ * @property {string | undefined} [tour_description]
+ * @property {number | undefined} [tour_price]
+ * @property {string | undefined} [tour_start_date]
+ * @property {string | undefined} [tour_end_date]
+ * @property {number | undefined} [tour_capacity]
+ * @property {number | undefined} [destination_id]
+ * @property {string | undefined} [destination_name]
+ * @property {string | undefined} [destination_description]
+ * @property {string | undefined} [destination_image_url]
  * @property {BookingStatus} status
  * @property {string} created_at
  */

@@ -4,14 +4,28 @@ import { error } from '@sveltejs/kit';
 /** @type {import('./$types').PageLoad} */
 export async function load({ params }) {
 	try {
-		const [tour, reviews, destinations] = await Promise.all([
+		const [tour, reviews] = await Promise.all([
 			api.tours.get(params.id),
-			api.reviews.getTourReviews(params.id),
-			api.destinations.list()
+			api.reviews.getTourReviews(params.id)
 		]);
-		const destination = destinations.find((d) => d.id === tour.destination_id);
+
+		if (!tour) {
+			throw error(404, 'Tour not found');
+		}
+
+		const destination = tour.destination_id
+			? {
+					id: tour.destination_id,
+					name: tour.destination_name,
+					description: tour.destination_description,
+					image_url: tour.destination_image_url
+				}
+			: null;
 		return { tour, reviews, destination };
-	} catch {
+	} catch (/** @type {any} */ err) {
+		if (err?.status === 404) {
+			throw err;
+		}
 		throw error(404, 'Tour not found');
 	}
 }

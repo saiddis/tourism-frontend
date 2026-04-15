@@ -4,16 +4,14 @@ import { api } from '$lib/api/client.js';
 export async function load({ url }) {
 	const destinationId = url.searchParams.get('destination');
 	try {
-		const [destinations, tours] = await Promise.all([api.destinations.list(), api.tours.list()]);
+		const tours = await api.tours.list();
 		let filteredTours = tours;
 		if (destinationId) {
 			filteredTours = tours.filter((t) => t.destination_id === parseInt(destinationId));
 		}
-		const destination = destinationId
-			? destinations.find((d) => d.id === parseInt(destinationId))
-			: null;
-		return { tours: filteredTours, destinations, destination };
+		const destination = destinationId ? await api.destinations.get(destinationId) : null;
+		return { tours: filteredTours, destination };
 	} catch {
-		return { tours: [], destinations: [], destination: null, error: 'Unable to load tours' };
+		return { tours: [], destination: null, error: 'Unable to load tours' };
 	}
 }

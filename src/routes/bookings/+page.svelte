@@ -35,7 +35,7 @@
 
 	function openPaymentModal(booking) {
 		payment.bookingId = booking.id;
-		payment.amount = booking.tour?.price || 0;
+		payment.amount = booking.tour_price || 0;
 		payment.error = null;
 		payment.success = false;
 		showPaymentModal = true;
@@ -107,10 +107,10 @@
 							<div class="flex-1">
 								<div class="flex items-start gap-4">
 									<div class="h-24 w-24 flex-shrink-0 overflow-hidden rounded-lg bg-muted">
-										{#if booking.destination?.image_url}
+										{#if booking.destination_image_url}
 											<img
-												src={booking.destination.image_url}
-												alt={booking.tour?.name}
+												src={booking.destination_image_url}
+												alt={booking.tour_name}
 												class="h-full w-full object-cover"
 											/>
 										{:else}
@@ -131,8 +131,8 @@
 										{/if}
 									</div>
 									<div>
-										<h3 class="text-lg font-semibold">{booking.tour?.name || 'Unknown Tour'}</h3>
-										{#if booking.destination}
+										<h3 class="text-lg font-semibold">{booking.tour_name || 'Unknown Tour'}</h3>
+										{#if booking.destination_name}
 											<p class="mt-1 flex items-center gap-1 text-sm text-muted-foreground">
 												<svg
 													class="h-3 w-3"
@@ -146,10 +146,10 @@
 													<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0Z" />
 													<circle cx="12" cy="10" r="3" />
 												</svg>
-												{booking.destination.name}
+												{booking.destination_name}
 											</p>
 										{/if}
-										{#if booking.tour}
+										{#if booking.tour_start_date || booking.tour_end_date}
 											<p class="mt-1 flex items-center gap-1 text-sm text-muted-foreground">
 												<svg
 													class="h-3 w-3"
@@ -164,7 +164,7 @@
 														d="M8 2v4M16 2v4M3 10h18M4 10h.01M20 10h.01M5 4h14a3 3 0 0 1 3 3v14a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3V7a3 3 0 0 1 3-3Z"
 													/>
 												</svg>
-												{formatDate(booking.tour.start_date)} - {formatDate(booking.tour.end_date)}
+												{formatDate(booking.tour_start_date)} - {formatDate(booking.tour_end_date)}
 											</p>
 										{/if}
 									</div>
@@ -217,7 +217,7 @@
 									{/if}
 									{booking.status}
 								</span>
-								<span class="font-semibold">{formatPrice(booking.tour?.price)}</span>
+								<span class="font-semibold">{formatPrice(booking.tour_price)}</span>
 							</div>
 						</div>
 					</div>

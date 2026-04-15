@@ -17,11 +17,6 @@
 			currency: 'USD'
 		}).format(price);
 	}
-
-	function getDestinationName(destinationId) {
-		const dest = data.destinations.find((d) => d.id === destinationId);
-		return dest?.name || 'Unknown';
-	}
 </script>
 
 <svelte:head
@@ -64,14 +59,12 @@
 					<div
 						class="relative flex aspect-video items-center justify-center bg-gradient-to-br from-primary/20 to-secondary/20"
 					>
-						{#if data.destination}
-							{#if data.destination.image_url}
-								<img
-									src={data.destination.image_url}
-									alt={tour.name}
-									class="absolute inset-0 h-full w-full object-cover opacity-50"
-								/>
-							{/if}
+						{#if (data.destination && data.destination.image_url) || tour.destination_image_url}
+							<img
+								src={data.destination?.image_url || tour.destination_image_url}
+								alt={tour.name}
+								class="absolute inset-0 h-full w-full object-cover opacity-50"
+							/>
 						{/if}
 						<div class="relative p-4 text-center">
 							<h3 class="text-xl font-semibold transition-colors group-hover:text-primary">
@@ -133,7 +126,7 @@
 										<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0Z" />
 										<circle cx="12" cy="10" r="3" />
 									</svg>
-									<span>{getDestinationName(tour.destination_id)}</span>
+									<span>{tour.destination_name || 'Unknown'}</span>
 								</div>
 							{/if}
 						</div>

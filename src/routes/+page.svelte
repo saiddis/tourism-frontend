@@ -27,8 +27,8 @@
 	<section class="relative min-h-[600px] overflow-hidden">
 		<div class="absolute inset-0">
 			<img
-				src="https://images.unsplash.com/photo-1506929562872-bb421503ef21?w=1920&h=1080&fit=crop"
-				alt="Beautiful tropical beach destination"
+				src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1920&h=1080&fit=crop"
+				alt="Tajikistan mountains and alpine lake"
 				class="h-full w-full object-cover"
 			/>
 			<div class="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-black/70"></div>
@@ -36,12 +36,12 @@
 		<div class="relative container mx-auto px-4 py-20 md:py-32">
 			<div class="max-w-3xl">
 				<h1 class="mb-6 font-heading text-4xl font-bold tracking-tight text-white md:text-6xl">
-					Discover Your Next
-					<span class="block text-primary">Extraordinary Journey</span>
+					Discover
+					<span class="block text-primary">Tajikistan</span>
 				</h1>
 				<p class="mb-8 max-w-xl text-lg text-white/80 md:text-xl">
-					Explore breathtaking destinations, book curated tours, and create unforgettable memories
-					with The Curated Horizon.
+					Explore the breathtaking Pamir Mountains, ancient Silk Road heritage, and warm hospitality
+					of Central Asia's most beautiful nation.
 				</p>
 				<div class="flex flex-col gap-4 sm:flex-row">
 					<a
@@ -78,8 +78,8 @@
 			<div class="grid grid-cols-1 gap-8 md:grid-cols-3">
 				<div class="relative overflow-hidden rounded-xl p-6 text-center">
 					<img
-						src="https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=600&h=400&fit=crop"
-						alt="Curated destinations"
+						src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=600&h=400&fit=crop"
+						alt="Tajikistan mountain peaks"
 						class="absolute inset-0 h-full w-full object-cover"
 					/>
 					<div class="absolute inset-0 bg-black/60"></div>
@@ -100,16 +100,14 @@
 								<path d="M2 12h20M12 2a14.14 14.14 0 0 1 0 20 14.14 14.14 0 0 1 0-20" />
 							</svg>
 						</div>
-						<h3 class="mb-2 text-lg font-semibold text-white">Curated Destinations</h3>
-						<p class="text-sm text-white/80">
-							Hand-picked locations that offer unique and memorable experiences.
-						</p>
+						<h3 class="mb-2 text-lg font-semibold text-white">Mountain Adventures</h3>
+						<p class="text-sm text-white/80">Treks through the Pamirs, the roof of the world.</p>
 					</div>
 				</div>
 				<div class="relative overflow-hidden rounded-xl p-6 text-center">
 					<img
-						src="https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=600&h=400&fit=crop"
-						alt="Expert planning"
+						src="https://images.unsplash.com/photo-1548013146-72479768bada?w=600&h=400&fit=crop"
+						alt="Tajik cultural heritage"
 						class="absolute inset-0 h-full w-full object-cover"
 					/>
 					<div class="absolute inset-0 bg-black/60"></div>
@@ -131,16 +129,14 @@
 								/>
 							</svg>
 						</div>
-						<h3 class="mb-2 text-lg font-semibold text-white">Expert Planning</h3>
-						<p class="text-sm text-white/80">
-							Every detail of your journey is thoughtfully arranged.
-						</p>
+						<h3 class="mb-2 text-lg font-semibold text-white">Cultural Treasures</h3>
+						<p class="text-sm text-white/80">Ancient fortresses and vibrant traditions await.</p>
 					</div>
 				</div>
 				<div class="relative overflow-hidden rounded-xl p-6 text-center">
 					<img
-						src="https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=600&h=400&fit=crop"
-						alt="Seamless experience"
+						src="https://images.unsplash.com/photo-1542401886-65d6c61db217?w=600&h=400&fit=crop"
+						alt="Pamir Highway scenic route"
 						class="absolute inset-0 h-full w-full object-cover"
 					/>
 					<div class="absolute inset-0 bg-black/60"></div>
@@ -163,10 +159,8 @@
 								<path d="M4 10V8c0-2.5 2-4.5 4.5-4.5h7c2.5 0 4.5 2 4.5 4.5v2" />
 							</svg>
 						</div>
-						<h3 class="mb-2 text-lg font-semibold text-white">Seamless Experience</h3>
-						<p class="text-sm text-white/80">
-							From booking to your return, enjoy a stress-free adventure.
-						</p>
+						<h3 class="mb-2 text-lg font-semibold text-white">Wakhan Valley</h3>
+						<p class="text-sm text-white/80">Scenic drives along ancient Silk Road valleys.</p>
 					</div>
 				</div>
 			</div>
@@ -252,6 +246,13 @@
 							class="group overflow-hidden rounded-lg border bg-card transition-shadow hover:shadow-lg"
 						>
 							<div class="relative aspect-video bg-muted">
+								{#if tour.destination_image_url}
+									<img
+										src={tour.destination_image_url}
+										alt={tour.name}
+										class="h-full w-full object-cover"
+									/>
+								{/if}
 								<div
 									class="absolute top-3 right-3 rounded bg-primary px-2 py-1 text-sm font-medium text-primary-foreground"
 								>

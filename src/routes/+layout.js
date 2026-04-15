@@ -1,5 +1,7 @@
 import { browser } from '$app/environment';
 
+export const ssr = false;
+
 /** @type {import('./$types').LayoutLoad} */
 export function load() {
 	if (!browser) {

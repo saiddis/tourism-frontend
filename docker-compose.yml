@@ -3,14 +3,13 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        VITE_API_URL: ${VITE_API_URL}
     container_name: tourism-frontend
     ports:
-      - '3000:3000'
-    environment:
-      - API_URL=http://tourism-backend:8080
-    networks:
-      - tourism-network
-    restart: unless-stopped
+      - '80:8080'
+    env_file:
+      - .env
 
 networks:
   tourism-network:

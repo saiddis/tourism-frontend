@@ -1,21 +1,23 @@
-app = "tourism-frontend"
-primary_region = "bom"
+# fly.toml app configuration file generated for tourism-frontend on 2026-04-15T04:47:21Z
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'tourism-frontend'
+primary_region = 'bom'
 
 [build]
-  dockerfile = "Dockerfile"
-
-[env]
-  PORT = "433"
 
 [http_service]
   internal_port = 433
   force_https = true
-  auto_stop_machines = true
+  auto_stop_machines = 'stop'
   auto_start_machines = true
   min_machines_running = 0
-  processes = ["app"]
+  processes = ['app']
 
 [[vm]]
-  memory = "256md"
-  cpu_kind = "shared"
+  memory = '1gb'
+  cpu_kind = 'shared'
   cpus = 1
+  memory_mb = 256

@@ -22,3 +22,6 @@ primary_region = 'bom'
   cpu_kind = "shared"
   cpus = 1
   memory_mb = 256
+
+[build.args]
+  VITE_API_URL = "https://tourism-backend.fly.dev"

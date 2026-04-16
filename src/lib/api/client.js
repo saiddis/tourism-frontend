@@ -129,6 +129,9 @@ export const api = {
 				method: 'POST',
 				body: JSON.stringify(data)
 			});
+			if (response && response.user && response.access_token) {
+				setAuthData(response.user, response);
+			}
 			return response;
 		},
 		/** @param {string} email @param {string} password */

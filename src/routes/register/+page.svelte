@@ -1,5 +1,6 @@
 <script>
 	import { goto } from '$app/navigation';
+	import { invalidateAll } from '$app/navigation';
 	import { api } from '$lib/api/client.js';
 
 	let name = $state('');
@@ -26,8 +27,9 @@
 
 		try {
 			await api.auth.register({ name, email, password });
+			await invalidateAll();
 			success = true;
-			setTimeout(() => goto('/login', { replaceState: true }), 1500);
+			setTimeout(() => goto('/bookings', { replaceState: true }), 1500);
 		} catch (err) {
 			error = err.message || 'Registration failed. Please try again.';
 		} finally {

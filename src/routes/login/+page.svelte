@@ -1,5 +1,6 @@
 <script>
 	import { goto } from '$app/navigation';
+	import { invalidateAll } from '$app/navigation';
 	import { api } from '$lib/api/client.js';
 
 	let email = $state('');
@@ -20,6 +21,7 @@
 
 		try {
 			await api.auth.login(email, password);
+			await invalidateAll();
 			success = true;
 			setTimeout(() => goto('/bookings', { replaceState: true }), 1000);
 		} catch (err) {

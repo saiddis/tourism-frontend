@@ -9,6 +9,9 @@
 	let showReviewForm = $state(false);
 
 	const user = $derived(getStoredUser());
+	const userBalance = $derived(user?.balance || 0);
+	const tourPrice = $derived(data.tour?.price || 0);
+	const hasEnoughBalance = $derived(userBalance >= tourPrice);
 
 	function formatDate(dateStr) {
 		if (!dateStr) return '';
@@ -49,9 +52,14 @@
 		try {
 			await api.bookings.create(data.tour.id);
 			booking.success = true;
+			await invalidateAll();
 			goto('/bookings');
 		} catch (err) {
-			booking.error = err.message || 'Failed to create booking. Please try again.';
+			if (err.message === 'insufficient balance') {
+				booking.error = `Insufficient balance. You have ${formatPrice(userBalance)} but need ${formatPrice(tourPrice)}.`;
+			} else {
+				booking.error = err.message || 'Failed to create booking. Please try again.';
+			}
 		} finally {
 			booking.loading = false;
 		}
@@ -521,28 +529,44 @@
 					{/if}
 
 					{#if user}
-						<button
-							onclick={handleBooking}
-							disabled={booking.loading}
-							class="flex w-full items-center justify-center gap-2 rounded-md bg-primary px-6 py-3 font-medium text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-50"
-						>
-							{#if booking.loading}
-								<svg
-									class="h-4 w-4 animate-spin"
-									viewBox="0 0 24 24"
-									fill="none"
-									stroke="currentColor"
-									stroke-width="2"
-									stroke-linecap="round"
-									stroke-linejoin="round"
-								>
-									<path d="M21 12a9 9 0 1 1-6.219-8.56" />
-								</svg>
-							{/if}
-							{booking.loading ? 'Booking...' : 'Book This Tour'}
-						</button>
+						{#if !hasEnoughBalance}
+							<div
+								class="mb-4 rounded-md border border-yellow-500/20 bg-yellow-500/10 p-3 text-sm text-yellow-600"
+							>
+								<p class="font-medium">Insufficient Balance</p>
+								<p class="mt-1">Your balance: {formatPrice(userBalance)}</p>
+								<p>Tour price: {formatPrice(tourPrice)}</p>
+							</div>
+							<a
+								href="/profile"
+								class="flex w-full items-center justify-center gap-2 rounded-md bg-primary px-6 py-3 font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+							>
+								Add Funds to Continue
+							</a>
+						{:else}
+							<button
+								onclick={handleBooking}
+								disabled={booking.loading}
+								class="flex w-full items-center justify-center gap-2 rounded-md bg-primary px-6 py-3 font-medium text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-50"
+							>
+								{#if booking.loading}
+									<svg
+										class="h-4 w-4 animate-spin"
+										viewBox="0 0 24 24"
+										fill="none"
+										stroke="currentColor"
+										stroke-width="2"
+										stroke-linecap="round"
+										stroke-linejoin="round"
+									>
+										<path d="M21 12a9 9 0 1 1-6.219-8.56" />
+									</svg>
+								{/if}
+								{booking.loading ? 'Processing...' : `Book & Pay ${formatPrice(tourPrice)}`}
+							</button>
+						{/if}
 						<p class="mt-3 text-center text-xs text-muted-foreground">
-							No payment required at booking. You'll be redirected to complete your booking.
+							Your balance: {formatPrice(userBalance)}
 						</p>
 					{:else}
 						<a

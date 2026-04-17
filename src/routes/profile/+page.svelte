@@ -137,7 +137,9 @@
 <div class="container mx-auto max-w-4xl px-4 py-12">
 	{#if loading}
 		<div class="flex items-center justify-center py-20">
-			<div class="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent"></div>
+			<div
+				class="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent"
+			></div>
 		</div>
 	{:else if user}
 		<div class="space-y-8">
@@ -156,10 +158,16 @@
 						<button
 							onclick={() => fileInput?.click()}
 							type="button"
-							class="absolute -bottom-2 -right-2 rounded-full bg-primary p-2 text-primary-foreground shadow-md hover:bg-primary/90"
+							class="absolute -right-2 -bottom-2 rounded-full bg-primary p-2 text-primary-foreground shadow-md hover:bg-primary/90"
 							title="Upload avatar"
 						>
-							<svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+							<svg
+								class="h-4 w-4"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="2"
+							>
 								<path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7" />
 								<line x1="16" x2="2" y1="5" y2="19" />
 								<line x1="2" x2="22" y1="12" y2="12" />
@@ -179,7 +187,7 @@
 						<h2 class="font-heading text-2xl font-bold">{user.name}</h2>
 						<p class="text-muted-foreground">{user.email}</p>
 						<span
-							class="mt-2 inline-block rounded-full bg-primary/10 px-3 py-1 text-xs font-medium capitalize text-primary"
+							class="mt-2 inline-block rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary capitalize"
 						>
 							{user.role}
 						</span>
@@ -214,7 +222,13 @@
 				</div>
 
 				{#if editMode}
-					<form onsubmit={(e) => { e.preventDefault(); handleUpdateProfile(); }} class="space-y-4">
+					<form
+						onsubmit={(e) => {
+							e.preventDefault();
+							handleUpdateProfile();
+						}}
+						class="space-y-4"
+					>
 						<div>
 							<label for="name" class="mb-2 block text-sm font-medium">Full Name</label>
 							<input
@@ -290,18 +304,19 @@
 						Set Avatar
 					</button>
 				</div>
-				<p class="mt-2 text-xs text-muted-foreground">
-					Paste an image URL to use as your avatar
-				</p>
+				<p class="mt-2 text-xs text-muted-foreground">Paste an image URL to use as your avatar</p>
 			</div>
 
 			<div
-				class="rounded-lg border border-dashed p-8 text-center"
+				class="rounded-lg border border-dashed p-8 text-center {dragOver
+					? 'border-primary bg-primary/5'
+					: ''}"
 				role="region"
 				aria-label="Avatar drop zone"
-				class:border-primary={dragOver}
-				class:bg-primary/5={dragOver}
-				ondragover={(e) => { e.preventDefault(); dragOver = true; }}
+				ondragover={(e) => {
+					e.preventDefault();
+					dragOver = true;
+				}}
 				ondragleave={() => (dragOver = false)}
 				ondrop={handleDrop}
 			>
@@ -326,9 +341,7 @@
 						browse
 					</button>
 				</p>
-				<p class="mt-1 text-xs text-muted-foreground">
-					JPG, PNG, WebP, or GIF (max 5MB)
-				</p>
+				<p class="mt-1 text-xs text-muted-foreground">JPG, PNG, WebP, or GIF (max 5MB)</p>
 			</div>
 		</div>
 	{/if}
@@ -342,9 +355,17 @@
 	>
 		<div class="w-full max-w-md rounded-lg bg-card p-6 shadow-lg">
 			<h3 class="font-heading text-xl font-semibold">Add Funds</h3>
-			<p class="mt-1 text-sm text-muted-foreground">Enter the amount you want to add to your balance</p>
+			<p class="mt-1 text-sm text-muted-foreground">
+				Enter the amount you want to add to your balance
+			</p>
 
-			<form onsubmit={(e) => { e.preventDefault(); handleDeposit(); }} class="mt-6 space-y-4">
+			<form
+				onsubmit={(e) => {
+					e.preventDefault();
+					handleDeposit();
+				}}
+				class="mt-6 space-y-4"
+			>
 				<div>
 					<label for="amount" class="mb-2 block text-sm font-medium">Amount (TJS)</label>
 					<input
@@ -373,7 +394,10 @@
 					</button>
 					<button
 						type="button"
-						onclick={() => { depositModal = false; depositForm.error = ''; }}
+						onclick={() => {
+							depositModal = false;
+							depositForm.error = '';
+						}}
 						class="rounded-md border px-4 py-2 text-sm font-medium hover:bg-muted"
 					>
 						Cancel

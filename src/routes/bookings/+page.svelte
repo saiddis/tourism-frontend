@@ -4,9 +4,6 @@
 
 	let { data } = $props();
 
-	let payment = $state({ bookingId: null, amount: 0, loading: false, error: null, success: false });
-	let showPaymentModal = $state(false);
-
 	function formatDate(dateStr) {
 		if (!dateStr) return '';
 		return new Date(dateStr).toLocaleDateString('en-US', {
@@ -33,34 +30,13 @@
 		return styles[status] || styles.pending;
 	}
 
-	function openPaymentModal(booking) {
-		payment.bookingId = booking.id;
-		payment.amount = booking.tour_price || 0;
-		payment.error = null;
-		payment.success = false;
-		showPaymentModal = true;
-	}
-
-	async function handlePayment() {
-		payment.loading = true;
-		payment.error = null;
-		try {
-			await api.payments.create(payment.bookingId, payment.amount);
-			payment.success = true;
-			await invalidateAll();
-			setTimeout(() => {
-				showPaymentModal = false;
-				payment.success = false;
-			}, 2000);
-		} catch (err) {
-			payment.error = err.message || 'Payment failed. Please try again.';
-		} finally {
-			payment.loading = false;
-		}
-	}
-
-	async function cancelBooking(bookingId) {
-		if (!confirm('Are you sure you want to cancel this booking?')) return;
+	async function cancelBooking(bookingId, tourPrice, status) {
+		const confirmed = confirm(
+			status === 'confirmed'
+				? `Are you sure you want to cancel this booking? Your payment of ${formatPrice(tourPrice)} will be refunded.`
+				: 'Are you sure you want to cancel this booking?'
+		);
+		if (!confirmed) return;
 		try {
 			await api.bookings.updateStatus(bookingId, 'cancelled');
 			await invalidateAll();
@@ -228,36 +204,12 @@
 							<div class="text-sm text-muted-foreground">
 								Booked on {formatDate(booking.created_at)}
 							</div>
-							<div class="flex items-center gap-2">
-								{#if booking.status === 'pending'}
-									<button
-										onclick={() => openPaymentModal(booking)}
-										class="flex items-center gap-1 text-sm font-medium text-primary hover:underline"
-									>
-										<svg
-											class="h-4 w-4"
-											viewBox="0 0 24 24"
-											fill="none"
-											stroke="currentColor"
-											stroke-width="2"
-											stroke-linecap="round"
-											stroke-linejoin="round"
-										>
-											<rect width="20" height="16" x="2" y="4" rx="2" />
-											<path d="M2 10h20" />
-										</svg>
-										Make Payment
-									</button>
-								{/if}
-								{#if booking.status === 'pending'}
-									<button
-										onclick={() => cancelBooking(booking.id)}
-										class="text-sm font-medium text-destructive hover:underline"
-									>
-										Cancel Booking
-									</button>
-								{/if}
-							</div>
+							<button
+								onclick={() => cancelBooking(booking.id, booking.tour_price, booking.status)}
+								class="text-sm font-medium text-destructive hover:underline"
+							>
+								Cancel Booking
+							</button>
 						</div>
 					{/if}
 				</div>
@@ -293,90 +245,3 @@
 		</div>
 	{/if}
 </div>
-
-{#if showPaymentModal}
-	<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-		<div class="w-full max-w-md rounded-lg border bg-card p-6">
-			<h2 class="mb-4 font-heading text-xl font-semibold">Complete Payment</h2>
-
-			{#if payment.error}
-				<div
-					class="mb-4 flex items-center gap-2 rounded-md border border-destructive/20 bg-destructive/10 p-3 text-sm text-destructive"
-				>
-					<svg
-						class="h-4 w-4 flex-shrink-0"
-						viewBox="0 0 24 24"
-						fill="none"
-						stroke="currentColor"
-						stroke-width="2"
-						stroke-linecap="round"
-						stroke-linejoin="round"
-					>
-						<circle cx="12" cy="12" r="10" />
-						<path d="M12 8v4M12 16h.01" />
-					</svg>
-					{payment.error}
-				</div>
-			{/if}
-
-			{#if payment.success}
-				<div
-					class="mb-4 flex items-center gap-2 rounded-md border border-green-500/20 bg-green-500/10 p-4 text-sm text-green-600"
-				>
-					<svg
-						class="h-5 w-5 flex-shrink-0"
-						viewBox="0 0 24 24"
-						fill="none"
-						stroke="currentColor"
-						stroke-width="2"
-						stroke-linecap="round"
-						stroke-linejoin="round"
-					>
-						<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
-						<path d="M22 4L12 14.01l-3-3" />
-					</svg>
-					Payment submitted successfully!
-				</div>
-			{:else}
-				<div class="space-y-4">
-					<div>
-						<p class="mb-1 text-sm text-muted-foreground">Amount</p>
-						<p class="text-2xl font-bold">{formatPrice(payment.amount)}</p>
-					</div>
-					<p class="text-sm text-muted-foreground">
-						This is a demo payment. In a real application, you would be redirected to a payment
-						gateway.
-					</p>
-					<div class="flex gap-3">
-						<button
-							onclick={() => (showPaymentModal = false)}
-							class="flex-1 rounded-md border py-2 font-medium transition-colors hover:bg-muted"
-						>
-							Cancel
-						</button>
-						<button
-							onclick={handlePayment}
-							disabled={payment.loading}
-							class="flex flex-1 items-center justify-center gap-2 rounded-md bg-primary py-2 font-medium text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-50"
-						>
-							{#if payment.loading}
-								<svg
-									class="h-4 w-4 animate-spin"
-									viewBox="0 0 24 24"
-									fill="none"
-									stroke="currentColor"
-									stroke-width="2"
-									stroke-linecap="round"
-									stroke-linejoin="round"
-								>
-									<path d="M21 12a9 9 0 1 1-6.219-8.56" />
-								</svg>
-							{/if}
-							{payment.loading ? 'Processing...' : 'Confirm Payment'}
-						</button>
-					</div>
-				</div>
-			{/if}
-		</div>
-	</div>
-{/if}

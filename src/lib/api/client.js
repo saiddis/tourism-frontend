@@ -295,6 +295,14 @@ export const api = {
 				method: 'POST',
 				body: JSON.stringify({ tour_id: tourId })
 			});
+			if (response && typeof localStorage !== 'undefined') {
+				try {
+					const user = await api.users.me();
+					if (user) {
+						localStorage.setItem('user', JSON.stringify(user));
+					}
+				} catch {}
+			}
 			return response;
 		},
 		/** @param {number|string} id */

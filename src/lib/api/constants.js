@@ -11,6 +11,10 @@ export const Endpoints = {
 	users: {
 		list: '/users',
 		me: '/users/me',
+		updateMe: '/users/me',
+		uploadAvatar: '/users/me/avatar',
+		setAvatarUrl: '/users/me/avatar-url',
+		deposit: '/users/deposit',
 		/** @param {number|string} id */
 		get: (id) => `/users/${id}`
 	},

@@ -170,6 +170,50 @@ export const api = {
 			const response = await request(Endpoints.users.me);
 			return response;
 		},
+		/** @param {{ name: string, email: string }} data */
+		async update(data) {
+			const response = await request(Endpoints.users.updateMe, {
+				method: 'PATCH',
+				body: JSON.stringify(data)
+			});
+			return response;
+		},
+		/** @param {File} file */
+		async uploadAvatar(file) {
+			const formData = new FormData();
+			formData.append('avatar', file);
+			const response = await fetch(API_BASE + Endpoints.users.uploadAvatar, {
+				method: 'POST',
+				body: formData,
+				credentials: 'include'
+			});
+			if (!response.ok) {
+				const text = await response.text();
+				const errorData = text ? JSON.parse(text) : {};
+				throw new ApiError(response.status, errorData.error || 'Upload failed', errorData);
+			}
+			const data = await response.json();
+			if (typeof localStorage !== 'undefined') {
+				localStorage.setItem('user', JSON.stringify(data));
+			}
+			return data;
+		},
+		/** @param {string} url */
+		async setAvatarUrl(url) {
+			const response = await request(Endpoints.users.setAvatarUrl, {
+				method: 'PUT',
+				body: JSON.stringify({ avatar_url: url })
+			});
+			return response;
+		},
+		/** @param {number} amount */
+		async deposit(amount) {
+			const response = await request(Endpoints.users.deposit, {
+				method: 'POST',
+				body: JSON.stringify({ amount })
+			});
+			return response;
+		},
 		/** @param {number|string} id */
 		async get(id) {
 			const response = await request(Endpoints.users.get(id));

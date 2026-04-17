@@ -4,6 +4,8 @@
 	import { page } from '$app/stores';
 	import { goto, invalidateAll } from '$app/navigation';
 	import { api } from '$lib/api/client.js';
+	import { API_BASE } from '$lib/api/constants.js';
+	import { Avatar, AvatarImage, AvatarFallback } from '$lib/components/ui/avatar';
 
 	/** @type {import('./$types').LayoutProps} */
 	let { data, children } = $props();
@@ -26,6 +28,12 @@
 		}
 
 		goto('/', { replaceState: true });
+	}
+
+	function getAvatarSrc(avatarUrl) {
+		if (!avatarUrl) return null;
+		if (avatarUrl.startsWith('http')) return avatarUrl;
+		return API_BASE + avatarUrl;
 	}
 </script>
 
@@ -80,16 +88,21 @@
 				</div>
 				<div class="flex items-center gap-4">
 					{#if isAuthenticated}
-						<div class="flex items-center gap-4">
-							<span class="hidden text-sm text-muted-foreground sm:inline"
-								>Hi, {data.user?.name || 'Traveler'}</span
+						<a href="/profile" class="flex items-center gap-3 hover:opacity-80">
+							<Avatar size="sm">
+								<AvatarImage src={getAvatarSrc(data.user?.avatar_url)} alt={data.user?.name} />
+								<AvatarFallback>{data.user?.name?.charAt(0) || 'U'}</AvatarFallback>
+							</Avatar>
+							<span class="hidden text-sm font-medium sm:inline"
+								>{data.user?.name || 'Traveler'}</span
 							>
-							<button
-								onclick={handleLogout}
-								type="button"
-								class="text-sm font-medium transition-colors hover:text-primary">Logout</button
-							>
-						</div>
+						</a>
+						<button
+							onclick={handleLogout}
+							type="button"
+							class="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
+							>Logout</button
+						>
 					{:else}
 						<a href="/login" class="text-sm font-medium transition-colors hover:text-primary"
 							>Login</a

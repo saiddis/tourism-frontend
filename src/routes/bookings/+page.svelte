@@ -1,6 +1,7 @@
 <script>
 	import { invalidateAll } from '$app/navigation';
 	import { api } from '$lib/api/client.js';
+	import { getImageUrl } from '$lib/api/constants.js';
 
 	let { data } = $props();
 
@@ -25,16 +26,17 @@
 		const styles = {
 			pending: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400',
 			confirmed: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400',
-			cancelled: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
+			cancelled: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400',
+			completed: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'
 		};
 		return styles[status] || styles.pending;
 	}
 
 	async function cancelBooking(bookingId, tourPrice, status) {
 		const confirmed = confirm(
-			status === 'confirmed'
+			status === 'pending'
 				? `Are you sure you want to cancel this booking? Your payment of ${formatPrice(tourPrice)} will be refunded.`
-				: 'Are you sure you want to cancel this booking?'
+				: 'Are you sure you want to cancel this booking? Confirmed bookings cannot be cancelled.'
 		);
 		if (!confirmed) return;
 		try {
@@ -85,7 +87,7 @@
 									<div class="h-24 w-24 flex-shrink-0 overflow-hidden rounded-lg bg-muted">
 										{#if booking.destination_image_url}
 											<img
-												src={booking.destination_image_url}
+												src={getImageUrl(booking.destination_image_url)}
 												alt={booking.tour_name}
 												class="h-full w-full object-cover"
 											/>
@@ -190,6 +192,20 @@
 										>
 											<path d="M18 6 6 18M6 6l12 12" />
 										</svg>
+									{:else if booking.status === 'completed'}
+										<svg
+											class="mr-1 h-3 w-3"
+											viewBox="0 0 24 24"
+											fill="none"
+											stroke="currentColor"
+											stroke-width="2"
+											stroke-linecap="round"
+											stroke-linejoin="round"
+										>
+											<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+											<path d="M22 4L12 14.01l-3-3" />
+											<path d="M16 4l4 4M8 4l-4 4" />
+										</svg>
 									{/if}
 									{booking.status}
 								</span>
@@ -197,7 +213,7 @@
 							</div>
 						</div>
 					</div>
-					{#if booking.status !== 'cancelled'}
+					{#if booking.status !== 'cancelled' && booking.status !== 'completed'}
 						<div
 							class="flex flex-wrap items-center justify-between gap-4 border-t bg-muted/30 px-6 py-4"
 						>
@@ -206,9 +222,17 @@
 							</div>
 							<button
 								onclick={() => cancelBooking(booking.id, booking.tour_price, booking.status)}
-								class="text-sm font-medium text-destructive hover:underline"
+								disabled={booking.status === 'confirmed' || booking.status === 'completed'}
+								class="text-sm font-medium {booking.status === 'confirmed' ||
+								booking.status === 'completed'
+									? 'cursor-not-allowed text-muted-foreground'
+									: 'text-destructive hover:underline'}"
 							>
-								Cancel Booking
+								{booking.status === 'confirmed'
+									? 'Confirmed (non-refundable)'
+									: booking.status === 'completed'
+										? 'Completed'
+										: 'Cancel Booking'}
 							</button>
 						</div>
 					{/if}

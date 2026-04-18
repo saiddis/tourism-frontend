@@ -155,6 +155,9 @@
 						</li>
 						<li><a href="/tours" class="transition-colors hover:text-foreground">Tours</a></li>
 						<li>
+							<a href="/providers" class="transition-colors hover:text-foreground">Providers</a>
+						</li>
+						<li>
 							<a href="/bookings" class="transition-colors hover:text-foreground">My Bookings</a>
 						</li>
 					</ul>
@@ -165,6 +168,13 @@
 						<li><a href="/login" class="transition-colors hover:text-foreground">Login</a></li>
 						<li>
 							<a href="/register" class="transition-colors hover:text-foreground">Register</a>
+						</li>
+						<li>
+							<a
+								href="/become-provider"
+								class="font-medium text-primary transition-colors hover:text-foreground"
+								>Become a Provider</a
+							>
 						</li>
 					</ul>
 				</div>

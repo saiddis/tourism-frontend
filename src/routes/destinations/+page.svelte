@@ -1,15 +1,73 @@
 <script>
+	import { invalidateAll } from '$app/navigation';
+	import { api } from '$lib/api/client.js';
+	import { Drawer } from '$lib/components/ui/drawer';
+	import { getImageUrl } from '$lib/api/constants.js';
+
 	let { data } = $props();
+
+	let drawerOpen = $state(false);
+	let loading = $state(false);
+	let error = $state('');
+
+	let form = $state({
+		name: '',
+		description: '',
+		image_file: null
+	});
+
+	async function handleSubmit(e) {
+		e.preventDefault();
+		loading = true;
+		error = '';
+		try {
+			const formData = new FormData();
+			formData.append('name', form.name);
+			formData.append('description', form.description);
+			if (form.image_file) {
+				formData.append('image', form.image_file);
+			}
+
+			await api.destinations.create(formData);
+			drawerOpen = false;
+			form = { name: '', description: '', image_file: null };
+			await invalidateAll();
+		} catch (err) {
+			error = err.message || 'Failed to create destination';
+		} finally {
+			loading = false;
+		}
+	}
+
+	function handleFileSelect(e) {
+		const file = e.target.files?.[0];
+		if (file) {
+			form.image_file = file;
+		}
+	}
 </script>
 
 <svelte:head><title>Destinations | The Curated Horizon</title></svelte:head>
 
 <div class="container mx-auto px-4 py-8">
-	<div class="mb-8">
-		<h1 class="font-heading text-3xl font-bold md:text-4xl">Destinations</h1>
-		<p class="mt-2 text-muted-foreground">
-			Explore our curated collection of breathtaking destinations
-		</p>
+	<div class="mb-8 flex items-center justify-between">
+		<div>
+			<h1 class="font-heading text-3xl font-bold md:text-4xl">Destinations</h1>
+			<p class="mt-2 text-muted-foreground">
+				Explore our curated collection of breathtaking destinations
+			</p>
+		</div>
+		{#if data.user?.role === 'admin'}
+			<button
+				onclick={() => (drawerOpen = true)}
+				class="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+			>
+				<svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+					<path d="M12 5v14M5 12h14" />
+				</svg>
+				Create Destination
+			</button>
+		{/if}
 	</div>
 
 	{#if data.error}
@@ -42,7 +100,7 @@
 					<div class="relative aspect-[4/3] overflow-hidden bg-muted">
 						{#if destination.image_url}
 							<img
-								src={destination.image_url}
+								src={getImageUrl(destination.image_url)}
 								alt={destination.name}
 								class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
 							/>
@@ -105,3 +163,54 @@
 		</div>
 	{/if}
 </div>
+
+<Drawer bind:open={drawerOpen} title="Create Destination">
+	<form onsubmit={handleSubmit} class="space-y-4">
+		{#if error}
+			<div class="rounded-md bg-destructive/10 p-3 text-sm text-destructive">{error}</div>
+		{/if}
+
+		<div>
+			<label for="name" class="block text-sm font-medium">Destination Name</label>
+			<input
+				type="text"
+				id="name"
+				bind:value={form.name}
+				required
+				class="mt-1 block w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+			/>
+		</div>
+
+		<div>
+			<label for="description" class="block text-sm font-medium">Description</label>
+			<textarea
+				id="description"
+				bind:value={form.description}
+				rows="3"
+				class="mt-1 block w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+			></textarea>
+		</div>
+
+		<div>
+			<label for="image" class="block text-sm font-medium">Image</label>
+			<input
+				type="file"
+				id="image"
+				accept="image/*"
+				onchange={handleFileSelect}
+				class="mt-1 block w-full rounded-md border border-input bg-background px-3 py-2 text-sm file:mr-4 file:cursor-pointer file:rounded-md file:border-0 file:bg-primary/10 file:px-3 file:py-1 file:text-sm file:font-medium file:text-primary"
+			/>
+			{#if form.image_file}
+				<p class="mt-1 text-xs text-muted-foreground">Selected: {form.image_file.name}</p>
+			{/if}
+		</div>
+
+		<button
+			type="submit"
+			disabled={loading}
+			class="w-full rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
+		>
+			{loading ? 'Creating...' : 'Create Destination'}
+		</button>
+	</form>
+</Drawer>

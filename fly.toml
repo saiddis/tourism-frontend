@@ -4,7 +4,7 @@
 #
 
 app = "tourism-frontend"
-primary_region = "arn"
+primary_region = "bom"
 
 [build]
   dockerfile = "Dockerfile"

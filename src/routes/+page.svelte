@@ -1,4 +1,6 @@
 <script>
+	import { getImageUrl } from '$lib/api/constants.js';
+
 	let { data } = $props();
 
 	const featuredDestinations = $derived(data.destinations?.slice(0, 4) || []);
@@ -187,7 +189,7 @@
 							<div class="mb-3 aspect-[4/3] overflow-hidden rounded-lg bg-muted">
 								{#if destination.image_url}
 									<img
-										src={destination.image_url}
+										src={getImageUrl(destination.image_url)}
 										alt={destination.name}
 										class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
 									/>
@@ -248,7 +250,7 @@
 							<div class="relative aspect-video bg-muted">
 								{#if tour.destination_image_url}
 									<img
-										src={tour.destination_image_url}
+										src={getImageUrl(tour.destination_image_url)}
 										alt={tour.name}
 										class="h-full w-full object-cover"
 									/>

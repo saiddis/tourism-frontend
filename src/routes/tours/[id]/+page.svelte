@@ -1,6 +1,7 @@
 <script>
 	import { goto, invalidateAll } from '$app/navigation';
-	import { api, getStoredUser } from '$lib/api/client.js';
+	import { api } from '$lib/api/client.js';
+	import { API_BASE, getImageUrl } from '$lib/api/constants.js';
 
 	let { data } = $props();
 
@@ -8,10 +9,12 @@
 	let review = $state({ rating: 5, comment: '', loading: false, error: null, success: false });
 	let showReviewForm = $state(false);
 
-	const user = $derived(getStoredUser());
+	const user = $derived(data.user);
 	const userBalance = $derived(user?.balance || 0);
 	const tourPrice = $derived(data.tour?.price || 0);
 	const hasEnoughBalance = $derived(userBalance >= tourPrice);
+	const isSoldOut = $derived(data.tour?.remaining_spots === 0);
+	const canBook = $derived(user && hasEnoughBalance && !isSoldOut);
 
 	function formatDate(dateStr) {
 		if (!dateStr) return '';
@@ -141,9 +144,15 @@
 			<div
 				class="flex aspect-video items-center justify-center overflow-hidden rounded-lg bg-gradient-to-br from-primary/20 to-secondary/20"
 			>
-				{#if data.destination?.image_url}
+				{#if data.tour.highlights && data.tour.highlights.length > 0}
 					<img
-						src={data.destination.image_url}
+						src={getImageSrc(data.tour.highlights[0].image_url)}
+						alt={data.tour?.name}
+						class="h-full w-full object-cover"
+					/>
+				{:else if data.destination?.image_url}
+					<img
+						src={getImageSrc(data.destination.image_url)}
 						alt={data.tour?.name}
 						class="h-full w-full object-cover"
 					/>
@@ -162,6 +171,24 @@
 					</svg>
 				{/if}
 			</div>
+
+			<!-- Tour Highlights Gallery -->
+			{#if data.tour.highlights && data.tour.highlights.length > 1}
+				<div class="rounded-lg border bg-card p-6">
+					<h2 class="mb-4 font-heading text-xl font-semibold">Tour Highlights</h2>
+					<div class="grid grid-cols-3 gap-2">
+						{#each data.tour.highlights as highlight}
+							<div class="relative aspect-square overflow-hidden rounded-lg">
+								<img
+									src={getImageSrc(highlight.image_url)}
+									alt="Tour highlight"
+									class="h-full w-full object-cover"
+								/>
+							</div>
+						{/each}
+					</div>
+				</div>
+			{/if}
 
 			<!-- Tour Details -->
 			<div class="rounded-lg border bg-card p-6">
@@ -212,8 +239,16 @@
 							<path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
 						</svg>
 						<div>
-							<p class="font-medium">Capacity</p>
-							<p class="text-sm text-muted-foreground">{data.tour?.capacity} travelers max</p>
+							<p class="font-medium">Availability</p>
+							{#if data.tour?.remaining_spots !== undefined && data.tour?.remaining_spots > 0}
+								<p class="text-sm font-medium text-green-600">
+									{data.tour.remaining_spots} spots left
+								</p>
+							{:else if data.tour?.remaining_spots === 0}
+								<p class="text-sm font-medium text-destructive">Sold out</p>
+							{:else}
+								<p class="text-sm text-muted-foreground">{data.tour?.capacity} travelers max</p>
+							{/if}
 						</div>
 					</div>
 					<div class="flex items-start gap-3">
@@ -504,7 +539,15 @@
 								<circle cx="9" cy="7" r="4" />
 								<path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
 							</svg>
-							<span>{data.tour?.capacity} spots available</span>
+							{#if data.tour?.remaining_spots !== undefined && data.tour?.remaining_spots > 0}
+								<span class="font-medium text-green-600"
+									>{data.tour.remaining_spots} spots left</span
+								>
+							{:else if data.tour?.remaining_spots === 0}
+								<span class="font-medium text-destructive">Sold out</span>
+							{:else}
+								<span>{data.tour?.capacity} spots available</span>
+							{/if}
 						</div>
 					</div>
 
@@ -529,7 +572,13 @@
 					{/if}
 
 					{#if user}
-						{#if !hasEnoughBalance}
+						{#if isSoldOut}
+							<div
+								class="rounded-md bg-destructive/10 p-3 text-center text-sm font-medium text-destructive"
+							>
+								This tour is sold out
+							</div>
+						{:else if !hasEnoughBalance}
 							<div
 								class="mb-4 rounded-md border border-yellow-500/20 bg-yellow-500/10 p-3 text-sm text-yellow-600"
 							>

@@ -1,5 +1,12 @@
 export const API_BASE = import.meta.env.VITE_API_URL;
 
+/** @param {string | undefined | null} url */
+export function getImageUrl(url) {
+	if (!url) return null;
+	if (url.startsWith('http')) return url;
+	return API_BASE + url;
+}
+
 /** @type {Record<string, any>} */
 export const Endpoints = {
 	auth: {
@@ -31,10 +38,19 @@ export const Endpoints = {
 		/** @param {number|string} id */
 		get: (id) => `/tours/${id}`,
 		create: '/tours',
+		createForProvider: '/providers/me/tours',
 		/** @param {number|string} id */
 		update: (id) => `/tours/${id}`,
 		/** @param {number|string} id */
-		delete: (id) => `/tours/${id}`
+		delete: (id) => `/tours/${id}`,
+		/** @param {number|string} id */
+		renew: (id) => `/tours/${id}/renew`,
+		/** @param {number|string} tourId */
+		highlights: (tourId) => `/tours/${tourId}/highlights`,
+		/** @param {number|string} tourId */
+		createHighlight: (tourId) => `/tours/${tourId}/highlights`,
+		/** @param {number|string} tourId @param {number|string} highlightId */
+		deleteHighlight: (tourId, highlightId) => `/tours/${tourId}/highlights/${highlightId}`
 	},
 	bookings: {
 		list: '/bookings',
@@ -61,6 +77,28 @@ export const Endpoints = {
 		tourReviews: (tourId) => `/reviews/tour/${tourId}`,
 		/** @param {number|string} id */
 		delete: (id) => `/reviews/${id}`
+	},
+	providers: {
+		list: '/providers',
+		listActive: '/providers/active',
+		/** @param {number|string} id */
+		get: (id) => `/providers/${id}`,
+		/** @param {number|string} userId */
+		getByUserId: (userId) => `/providers/user/${userId}`,
+		create: '/providers',
+		/** @param {number|string} id */
+		update: (id) => `/providers/${id}`,
+		/** @param {number|string} id */
+		toggleActive: (id) => `/providers/${id}/active`
+	},
+	providerApplications: {
+		submit: '/provider-applications',
+		getMine: '/provider-applications/me',
+		list: '/provider-applications',
+		/** @param {number|string} id */
+		accept: (id) => `/provider-applications/${id}/accept`,
+		/** @param {number|string} id */
+		reject: (id) => `/provider-applications/${id}/reject`
 	}
 };
 

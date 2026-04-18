@@ -5,25 +5,16 @@ function getAccessToken() {
 	return localStorage.getItem('access_token');
 }
 
-/** @param {any} user @param {{ access_token: string }} tokens */
-function setAuthData(user, tokens) {
+function setAccessToken(/** @type {{ access_token: string }} */ tokens) {
 	if (typeof localStorage === 'undefined') return;
-	localStorage.setItem('user', JSON.stringify(user));
 	localStorage.setItem('access_token', tokens.access_token);
 	localStorage.removeItem('refresh_token');
 }
 
-function clearAuthData() {
+function clearAccessToken() {
 	if (typeof localStorage === 'undefined') return;
-	localStorage.removeItem('user');
 	localStorage.removeItem('access_token');
 	localStorage.removeItem('refresh_token');
-}
-
-function getStoredUser() {
-	if (typeof localStorage === 'undefined') return null;
-	const userJson = localStorage.getItem('user');
-	return userJson ? JSON.parse(userJson) : null;
 }
 
 /** @param {Response} response */
@@ -40,16 +31,13 @@ async function refreshAccessToken() {
 	});
 
 	if (!response.ok) {
-		clearAuthData();
+		clearAccessToken();
 		const errorData = await parseResponse(response).catch(() => ({}));
 		throw new ApiError(response.status, errorData.error || 'Token refresh failed', errorData);
 	}
 
 	const tokens = await parseResponse(response);
-	const user = getStoredUser();
-	if (user) {
-		setAuthData(user, tokens);
-	}
+	setAccessToken(tokens);
 	return tokens;
 }
 
@@ -58,8 +46,9 @@ async function request(endpoint, options = {}) {
 	const url = API_BASE + endpoint;
 	const accessToken = getAccessToken();
 
+	const isFormData = options.body instanceof FormData;
 	const headers = /** @type {Record<string, string>} */ ({
-		'Content-Type': 'application/json',
+		...(isFormData ? {} : { 'Content-Type': 'application/json' }),
 		...(options.headers || {})
 	});
 
@@ -100,7 +89,7 @@ async function request(endpoint, options = {}) {
 			return parseResponse(retryResponse);
 		} catch (e) {
 			if (e instanceof ApiError && e.status === 401) {
-				clearAuthData();
+				clearAccessToken();
 				if (typeof window !== 'undefined') {
 					window.location.href = '/login';
 				}
@@ -129,8 +118,8 @@ export const api = {
 				method: 'POST',
 				body: JSON.stringify(data)
 			});
-			if (response && response.user && response.access_token) {
-				setAuthData(response.user, response);
+			if (response && response.access_token) {
+				setAccessToken(response);
 			}
 			return response;
 		},
@@ -141,13 +130,10 @@ export const api = {
 				body: JSON.stringify({ email, password })
 			});
 
-			const tokens = response;
-			if (typeof localStorage !== 'undefined') {
-				localStorage.setItem('access_token', tokens.access_token);
+			if (response?.access_token && typeof localStorage !== 'undefined') {
+				localStorage.setItem('access_token', response.access_token);
 			}
-			const user = await api.users.me();
-			setAuthData(user, tokens);
-			return { user, tokens };
+			return response;
 		},
 		async refresh() {
 			return refreshAccessToken();
@@ -156,7 +142,7 @@ export const api = {
 			try {
 				return await request(Endpoints.auth.logout, { method: 'DELETE' });
 			} finally {
-				clearAuthData();
+				clearAccessToken();
 			}
 		}
 	},
@@ -212,7 +198,10 @@ export const api = {
 				method: 'POST',
 				body: JSON.stringify({ amount })
 			});
-			return response;
+			if (response?.access_token && typeof localStorage !== 'undefined') {
+				localStorage.setItem('access_token', response.access_token);
+			}
+			return response?.user || response;
 		},
 		/** @param {number|string} id */
 		async get(id) {
@@ -233,9 +222,10 @@ export const api = {
 		},
 		/** @param {any} data */
 		async create(data) {
+			const isFormData = data instanceof FormData;
 			const response = await request(Endpoints.destinations.create, {
 				method: 'POST',
-				body: JSON.stringify(data)
+				body: isFormData ? data : JSON.stringify(data)
 			});
 			return response;
 		},
@@ -264,6 +254,14 @@ export const api = {
 			});
 			return response;
 		},
+		/** @param {any} data */
+		async createForProvider(data) {
+			const response = await request(Endpoints.tours.createForProvider, {
+				method: 'POST',
+				body: JSON.stringify(data)
+			});
+			return response;
+		},
 		/** @param {number|string} id @param {any} data */
 		async update(id, data) {
 			const response = await request(Endpoints.tours.update(id), {
@@ -275,6 +273,45 @@ export const api = {
 		/** @param {number|string} id */
 		async delete(id) {
 			const response = await request(Endpoints.tours.delete(id), { method: 'DELETE' });
+			return response;
+		},
+		/** @param {number|string} id @param {any} data */
+		async renew(id, data) {
+			const response = await request(Endpoints.tours.renew(id), {
+				method: 'PUT',
+				body: JSON.stringify(data)
+			});
+			return response;
+		},
+		/** @param {number|string} tourId */
+		async getHighlights(tourId) {
+			const response = await request(Endpoints.tours.highlights(tourId));
+			return response || [];
+		},
+		/** @param {number|string} tourId @param {any} data */
+		async createHighlight(tourId, data) {
+			const response = await request(Endpoints.tours.createHighlight(tourId), {
+				method: 'POST',
+				body: JSON.stringify(data)
+			});
+			return response;
+		},
+		/** @param {number|string} tourId @param {File} file */
+		async createHighlightWithFile(tourId, file) {
+			const formData = new FormData();
+			formData.append('image', file);
+
+			const response = await request(Endpoints.tours.createHighlight(tourId), {
+				method: 'POST',
+				body: formData
+			});
+			return response;
+		},
+		/** @param {number|string} tourId @param {number|string} highlightId */
+		async deleteHighlight(tourId, highlightId) {
+			const response = await request(Endpoints.tours.deleteHighlight(tourId, highlightId), {
+				method: 'DELETE'
+			});
 			return response;
 		}
 	},
@@ -295,15 +332,10 @@ export const api = {
 				method: 'POST',
 				body: JSON.stringify({ tour_id: tourId })
 			});
-			if (response && typeof localStorage !== 'undefined') {
-				try {
-					const user = await api.users.me();
-					if (user) {
-						localStorage.setItem('user', JSON.stringify(user));
-					}
-				} catch {}
+			if (response?.access_token && typeof localStorage !== 'undefined') {
+				localStorage.setItem('access_token', response.access_token);
 			}
-			return response;
+			return response?.booking || response;
 		},
 		/** @param {number|string} id */
 		async delete(id) {
@@ -368,7 +400,91 @@ export const api = {
 			const response = await request(Endpoints.reviews.delete(id), { method: 'DELETE' });
 			return response;
 		}
+	},
+
+	providers: {
+		async list() {
+			const response = await request(Endpoints.providers.list);
+			return response || [];
+		},
+		async listActive() {
+			const response = await request(Endpoints.providers.listActive);
+			return response || [];
+		},
+		/** @param {number|string} id */
+		async get(id) {
+			const response = await request(Endpoints.providers.get(id));
+			return response;
+		},
+		/** @param {number|string} userId */
+		async getByUserId(userId) {
+			const response = await request(Endpoints.providers.getByUserId(userId));
+			return response;
+		},
+		async getMine() {
+			const response = await request(Endpoints.providers.list);
+			return response;
+		},
+		/** @param {any} data */
+		async create(data) {
+			const response = await request(Endpoints.providers.create, {
+				method: 'POST',
+				body: JSON.stringify(data)
+			});
+			return response;
+		},
+		/** @param {number|string} id @param {any} data */
+		async update(id, data) {
+			const response = await request(Endpoints.providers.update(id), {
+				method: 'PUT',
+				body: JSON.stringify(data)
+			});
+			return response;
+		},
+		/** @param {number|string} id @param {boolean} active */
+		async toggleActive(id, active) {
+			const response = await request(Endpoints.providers.toggleActive(id), {
+				method: 'PUT',
+				body: JSON.stringify({ active })
+			});
+			return response;
+		}
+	},
+
+	providerApplications: {
+		/** @param {any} data */
+		async submit(data) {
+			const response = await request(Endpoints.providerApplications.submit, {
+				method: 'POST',
+				body: JSON.stringify(data)
+			});
+			return response;
+		},
+		async getMine() {
+			const response = await request(Endpoints.providerApplications.getMine);
+			return response;
+		},
+		async list() {
+			const response = await request(Endpoints.providerApplications.list);
+			return response || [];
+		},
+		/** @param {number|string} id @param {string} [adminNote] */
+		async accept(id, adminNote = '') {
+			const response = await request(Endpoints.providerApplications.accept(id), {
+				method: 'PUT',
+				body: JSON.stringify({ admin_note: adminNote })
+			});
+			return response;
+		},
+		/** @param {number|string} id @param {string} [adminNote] */
+		async reject(id, adminNote = '') {
+			const response = await request(Endpoints.providerApplications.reject(id), {
+				method: 'PUT',
+				body: JSON.stringify({ admin_note: adminNote })
+			});
+			return response;
+		}
 	}
 };
 
-export { getStoredUser, clearAuthData, getAccessToken };
+export { getAccessToken, setAccessToken, clearAccessToken, refreshAccessToken };

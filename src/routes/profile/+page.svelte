@@ -3,8 +3,13 @@
 	import { api } from '$lib/api/client.js';
 	import { API_BASE } from '$lib/api/constants.js';
 	import { Avatar, AvatarImage, AvatarFallback } from '$lib/components/ui/avatar';
+	import { user as authStore } from '$lib/stores/auth.js';
+
+	let { data } = $props();
 
 	let user = $state(null);
+	let provider = $state(null);
+	let application = $state(null);
 	let loading = $state(true);
 	let editMode = $state(false);
 	let depositModal = $state(false);
@@ -24,21 +29,42 @@
 	let fileInput = $state(null);
 	let dragOver = $state(false);
 
-	async function loadUser() {
+	$effect(() => {
+		const unsub = authStore.subscribe((u) => {
+			user = u;
+			if (u) {
+				loadUser(u);
+			} else {
+				loading = false;
+			}
+		});
+		return unsub;
+	});
+
+	async function loadUser(u) {
 		try {
-			user = await api.users.me();
-			editForm.name = user.name;
-			editForm.email = user.email;
+			editForm.name = u.name;
+			editForm.email = u.email;
+
+			if (u.role === 'provider') {
+				try {
+					provider = await api.providers.getByUserId(u.user_id);
+				} catch {
+					provider = null;
+				}
+			} else {
+				try {
+					application = await api.providerApplications.getMine();
+				} catch {
+					application = null;
+				}
+			}
 		} catch (err) {
 			goto('/login');
 		} finally {
 			loading = false;
 		}
 	}
-
-	$effect(() => {
-		loadUser();
-	});
 
 	function getAvatarSrc(avatarUrl) {
 		if (!avatarUrl) return null;
@@ -53,8 +79,7 @@
 				email: editForm.email
 			});
 			user = updated;
-			localStorage.setItem('user', JSON.stringify(updated));
-			await invalidateAll();
+			authStore.set(updated);
 			editMode = false;
 		} catch (err) {
 			alert(err.message || 'Failed to update profile');
@@ -80,8 +105,7 @@
 		try {
 			const updated = await api.users.uploadAvatar(file);
 			user = updated;
-			localStorage.setItem('user', JSON.stringify(updated));
-			await invalidateAll();
+			authStore.set(updated);
 		} catch (err) {
 			alert(err.message || 'Failed to upload avatar');
 		}
@@ -92,8 +116,7 @@
 		try {
 			const updated = await api.users.setAvatarUrl(avatarUrlInput.trim());
 			user = updated;
-			localStorage.setItem('user', JSON.stringify(updated));
-			await invalidateAll();
+			authStore.set(updated);
 			avatarUrlInput = '';
 		} catch (err) {
 			alert(err.message || 'Failed to set avatar URL');
@@ -113,8 +136,7 @@
 		try {
 			const updated = await api.users.deposit(amount);
 			user = updated;
-			localStorage.setItem('user', JSON.stringify(updated));
-			await invalidateAll();
+			authStore.set(updated);
 			depositModal = false;
 			depositForm.amount = '';
 		} catch (err) {
@@ -286,6 +308,119 @@
 					</dl>
 				{/if}
 			</div>
+
+			{#if user.role === 'admin'}
+				<div class="rounded-lg border bg-card p-6">
+					<div class="flex items-center justify-between">
+						<div>
+							<h3 class="font-heading text-lg font-semibold">Admin Tools</h3>
+							<p class="mt-1 text-sm text-muted-foreground">Manage platform content</p>
+						</div>
+						<a
+							href="/admin/provider-applications"
+							class="inline-flex items-center gap-2 rounded-md border px-4 py-2 text-sm font-medium transition-colors hover:bg-muted"
+						>
+							<svg
+								class="h-4 w-4"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="2"
+							>
+								<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+								<polyline points="14 2 14 8 20 8" />
+								<line x1="16" y1="13" x2="8" y2="13" />
+								<line x1="16" y1="17" x2="8" y2="17" />
+								<polyline points="10 9 9 9 8 9" />
+							</svg>
+							Provider Applications
+						</a>
+					</div>
+				</div>
+			{:else if user.role === 'provider' && provider}
+				<div class="rounded-lg border bg-card p-6">
+					<div class="flex items-center justify-between">
+						<div>
+							<h3 class="font-heading text-lg font-semibold">Provider Profile</h3>
+							<p class="mt-1 text-sm text-muted-foreground">You are a verified tour provider</p>
+						</div>
+						<a
+							href="/providers/{provider.id}"
+							class="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+						>
+							<svg
+								class="h-4 w-4"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="2"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+							>
+								<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+								<circle cx="9" cy="7" r="4" />
+								<path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
+							</svg>
+							View Your Profile
+						</a>
+					</div>
+					<div class="mt-4 grid grid-cols-2 gap-4 text-sm">
+						<div>
+							<p class="font-medium capitalize">{provider.provider_type}</p>
+							<p class="text-muted-foreground">Provider Type</p>
+						</div>
+						{#if provider.years_experience > 0}
+							<div>
+								<p class="font-medium">{provider.years_experience} years</p>
+								<p class="text-muted-foreground">Experience</p>
+							</div>
+						{/if}
+					</div>
+				</div>
+			{:else if application && application.status === 'pending'}
+				<div class="rounded-lg border border-yellow-500/20 bg-yellow-500/10 p-6">
+					<div class="flex items-center gap-3">
+						<div class="rounded-full bg-yellow-500/20 p-2">
+							<svg
+								class="h-5 w-5 text-yellow-600"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="2"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+							>
+								<circle cx="12" cy="12" r="10" />
+								<path d="M12 6v6l4 2" />
+							</svg>
+						</div>
+						<div>
+							<h3 class="font-semibold">Application Pending</h3>
+							<p class="text-sm text-muted-foreground">
+								Your provider application is being reviewed. You'll receive an email once it's
+								processed.
+							</p>
+						</div>
+					</div>
+				</div>
+			{:else}
+				<div class="rounded-lg border bg-card p-6">
+					<div class="flex items-center justify-between">
+						<div>
+							<h3 class="font-heading text-lg font-semibold">Become a Provider</h3>
+							<p class="mt-1 text-sm text-muted-foreground">
+								Share your travel experiences and create tours for travelers
+							</p>
+						</div>
+						<a
+							href="/become-provider"
+							class="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+						>
+							Apply Now
+						</a>
+					</div>
+				</div>
+			{/if}
 
 			<div class="rounded-lg border bg-card p-6">
 				<h3 class="mb-4 font-heading text-lg font-semibold">Set Avatar from URL</h3>

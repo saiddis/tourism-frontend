@@ -7,7 +7,6 @@
 	let password = $state('');
 	let loading = $state(false);
 	let error = $state('');
-	let success = $state(false);
 
 	async function handleSubmit(e) {
 		e.preventDefault();
@@ -20,10 +19,12 @@
 		error = '';
 
 		try {
-			await api.auth.login(email, password);
+			const response = await api.auth.login(email, password);
+			if (response?.access_token) {
+				localStorage.setItem('access_token', response.access_token);
+			}
 			await invalidateAll();
-			success = true;
-			setTimeout(() => goto('/bookings', { replaceState: true }), 1000);
+			goto('/');
 		} catch (err) {
 			error = err.message || 'Login failed. Please check your credentials.';
 		} finally {
@@ -59,26 +60,6 @@
 						<path d="M12 8v4M12 16h.01" />
 					</svg>
 					{error}
-				</div>
-			{/if}
-
-			{#if success}
-				<div
-					class="mb-6 flex items-center gap-2 rounded-md border border-green-500/20 bg-green-500/10 p-3 text-sm text-green-600"
-				>
-					<svg
-						class="h-4 w-4 flex-shrink-0"
-						viewBox="0 0 24 24"
-						fill="none"
-						stroke="currentColor"
-						stroke-width="2"
-						stroke-linecap="round"
-						stroke-linejoin="round"
-					>
-						<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
-						<path d="M22 4L12 14.01l-3-3" />
-					</svg>
-					Login successful! Redirecting...
 				</div>
 			{/if}
 

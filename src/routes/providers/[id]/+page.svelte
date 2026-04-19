@@ -3,6 +3,7 @@
 	import { api } from '$lib/api/client.js';
 	import { API_BASE } from '$lib/api/constants.js';
 	import { Drawer } from '$lib/components/ui/drawer';
+	import { user } from '$lib/stores/auth.js';
 
 	let { data } = $props();
 
@@ -86,7 +87,7 @@
 		}
 	}
 
-	const isOwnProfile = data.user?.user_id === data.provider.user_id;
+	const isOwnProfile = $user?.user_id === data.provider.user_id;
 
 	function formatDate(dateStr) {
 		if (!dateStr) return '';

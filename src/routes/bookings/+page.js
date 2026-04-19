@@ -1,25 +1,26 @@
 import { browser } from '$app/environment';
 import { redirect } from '@sveltejs/kit';
-import { user } from '$lib/stores/auth.js';
 import { api } from '$lib/api/client.js';
-import { get } from 'svelte/store';
 
 export const ssr = false;
 
 /** @type {import('./$types').PageLoad} */
 export async function load() {
 	if (!browser) {
-		return { bookings: [], user: null };
+		throw redirect(302, '/login');
 	}
 
-	const currentUser = get(user);
+	let currentUser = null;
 
-	if (!currentUser) {
+	try {
+		currentUser = await api.users.me();
+	} catch (err) {
+		console.error('Session expired, redirecting to login');
 		throw redirect(302, '/login');
 	}
 
 	try {
-		const response = await api.bookings.getUserBookings(currentUser.user_id);
+		const response = await api.bookings.getUserBookings(currentUser.id);
 		let bookings = [];
 
 		if (response) {

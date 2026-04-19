@@ -168,17 +168,10 @@ export const api = {
 		async uploadAvatar(file) {
 			const formData = new FormData();
 			formData.append('avatar', file);
-			const response = await fetch(API_BASE + Endpoints.users.uploadAvatar, {
+			const data = await request(Endpoints.users.uploadAvatar, {
 				method: 'POST',
-				body: formData,
-				credentials: 'include'
+				body: formData
 			});
-			if (!response.ok) {
-				const text = await response.text();
-				const errorData = text ? JSON.parse(text) : {};
-				throw new ApiError(response.status, errorData.error || 'Upload failed', errorData);
-			}
-			const data = await response.json();
 			if (typeof localStorage !== 'undefined') {
 				localStorage.setItem('user', JSON.stringify(data));
 			}

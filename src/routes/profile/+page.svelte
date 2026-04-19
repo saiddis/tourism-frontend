@@ -29,11 +29,21 @@
 	let fileInput = $state(null);
 	let dragOver = $state(false);
 
+	let userLoaded = $state(false);
+
 	$effect(() => {
-		const unsub = authStore.subscribe((u) => {
+		const unsub = authStore.subscribe(async (u) => {
+			if (userLoaded) return;
 			user = u;
 			if (u) {
-				loadUser(u);
+				try {
+					const fullUser = await api.users.me();
+					user = fullUser;
+					userLoaded = true;
+					await loadUser(fullUser);
+				} catch {
+					loading = false;
+				}
 			} else {
 				loading = false;
 			}
@@ -48,7 +58,7 @@
 
 			if (u.role === 'provider') {
 				try {
-					provider = await api.providers.getByUserId(u.user_id);
+					provider = await api.providers.getByUserId(u.id);
 				} catch {
 					provider = null;
 				}
@@ -152,9 +162,26 @@
 			currency: 'TJS'
 		}).format(balance || 0);
 	}
+
+	async function handleLogout() {
+		try {
+			await api.auth.logout();
+		} catch {
+			// Local auth state is already cleared in the client even if the network request fails.
+		}
+
+		await invalidateAll();
+
+		if (typeof window !== 'undefined') {
+			window.location.replace('/');
+			return;
+		}
+
+		goto('/');
+	}
 </script>
 
-<svelte:head><title>Profile | The Curated Horizon</title></svelte:head>
+<svelte:head><title>Profile | Horizon</title></svelte:head>
 
 <div class="container mx-auto max-w-4xl px-4 py-12">
 	{#if loading}
@@ -305,6 +332,15 @@
 							<dt class="text-sm text-muted-foreground">Member Since</dt>
 							<dd class="text-sm font-medium">{new Date(user.created_at).toLocaleDateString()}</dd>
 						</div>
+						<div class="pt-4">
+							<button
+								onclick={handleLogout}
+								type="button"
+								class="rounded-md border border-destructive/20 px-4 py-2 text-sm font-medium text-destructive hover:bg-destructive/10"
+							>
+								Logout
+							</button>
+						</div>
 					</dl>
 				{/if}
 			</div>
@@ -337,43 +373,47 @@
 						</a>
 					</div>
 				</div>
-			{:else if user.role === 'provider' && provider}
+			{:else if user.role === 'provider'}
 				<div class="rounded-lg border bg-card p-6">
 					<div class="flex items-center justify-between">
 						<div>
 							<h3 class="font-heading text-lg font-semibold">Provider Profile</h3>
 							<p class="mt-1 text-sm text-muted-foreground">You are a verified tour provider</p>
 						</div>
-						<a
-							href="/providers/{provider.id}"
-							class="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
-						>
-							<svg
-								class="h-4 w-4"
-								viewBox="0 0 24 24"
-								fill="none"
-								stroke="currentColor"
-								stroke-width="2"
-								stroke-linecap="round"
-								stroke-linejoin="round"
+						{#if provider}
+							<a
+								href="/providers/{provider.id}"
+								class="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
 							>
-								<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-								<circle cx="9" cy="7" r="4" />
-								<path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
-							</svg>
-							View Your Profile
-						</a>
+								<svg
+									class="h-4 w-4"
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="currentColor"
+									stroke-width="2"
+									stroke-linecap="round"
+									stroke-linejoin="round"
+								>
+									<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+									<circle cx="9" cy="7" r="4" />
+									<path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
+								</svg>
+								View Your Profile
+							</a>
+						{/if}
 					</div>
 					<div class="mt-4 grid grid-cols-2 gap-4 text-sm">
-						<div>
-							<p class="font-medium capitalize">{provider.provider_type}</p>
-							<p class="text-muted-foreground">Provider Type</p>
-						</div>
-						{#if provider.years_experience > 0}
+						{#if provider}
 							<div>
-								<p class="font-medium">{provider.years_experience} years</p>
-								<p class="text-muted-foreground">Experience</p>
+								<p class="font-medium capitalize">{provider.provider_type}</p>
+								<p class="text-muted-foreground">Provider Type</p>
 							</div>
+							{#if provider.years_experience > 0}
+								<div>
+									<p class="font-medium">{provider.years_experience} years</p>
+									<p class="text-muted-foreground">Experience</p>
+								</div>
+							{/if}
 						{/if}
 					</div>
 				</div>

@@ -55,7 +55,7 @@
 	}
 </script>
 
-<svelte:head><title>Become a Provider | The Curated Horizon</title></svelte:head>
+<svelte:head><title>Become a Provider | Horizon</title></svelte:head>
 
 <div class="container mx-auto max-w-2xl px-4 py-12">
 	<div class="mb-8">

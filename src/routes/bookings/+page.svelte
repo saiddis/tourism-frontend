@@ -48,7 +48,7 @@
 	}
 </script>
 
-<svelte:head><title>My Bookings | The Curated Horizon</title></svelte:head>
+<svelte:head><title>My Bookings | Horizon</title></svelte:head>
 
 <div class="container mx-auto px-4 py-8">
 	<div class="mb-8">
@@ -85,7 +85,13 @@
 							<div class="flex-1">
 								<div class="flex items-start gap-4">
 									<div class="h-24 w-24 flex-shrink-0 overflow-hidden rounded-lg bg-muted">
-										{#if booking.destination_image_url}
+										{#if booking.tour_highlights && booking.tour_highlights.length > 0 && booking.tour_highlights[0].image_url}
+											<img
+												src={getImageUrl(booking.tour_highlights[0].image_url)}
+												alt={booking.tour_name}
+												class="h-full w-full object-cover"
+											/>
+										{:else if booking.destination_image_url}
 											<img
 												src={getImageUrl(booking.destination_image_url)}
 												alt={booking.tour_name}

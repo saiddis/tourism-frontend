@@ -2,33 +2,16 @@
 	import './layout.css';
 	import favicon from '$lib/assets/favicon.svg';
 	import { page } from '$app/stores';
-	import { goto, invalidateAll } from '$app/navigation';
 	import { api } from '$lib/api/client.js';
 	import { API_BASE } from '$lib/api/constants.js';
 	import { Avatar, AvatarImage, AvatarFallback } from '$lib/components/ui/avatar';
+	import { user } from '$lib/stores/auth.js';
 
 	/** @type {import('./$types').LayoutProps} */
 	let { data, children } = $props();
 
 	const isAuthenticated = $derived(data?.user != null);
 	const currentPath = $derived($page.url.pathname);
-
-	async function handleLogout() {
-		try {
-			await api.auth.logout();
-		} catch {
-			// Local auth state is already cleared in the client even if the network request fails.
-		}
-
-		await invalidateAll();
-
-		if (typeof window !== 'undefined') {
-			window.location.replace('/');
-			return;
-		}
-
-		goto('/', { replaceState: true });
-	}
 
 	function getAvatarSrc(avatarUrl) {
 		if (!avatarUrl) return null;
@@ -58,7 +41,7 @@
 							<path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" />
 							<path d="M2 12h20" />
 						</svg>
-						<span class="hidden sm:inline">The Curated Horizon</span>
+						<span class="hidden sm:inline">Horizon</span>
 					</a>
 					<div class="hidden items-center gap-6 md:flex">
 						<a
@@ -97,12 +80,6 @@
 								>{data.user?.name || 'Traveler'}</span
 							>
 						</a>
-						<button
-							onclick={handleLogout}
-							type="button"
-							class="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
-							>Logout</button
-						>
 					{:else}
 						<a href="/login" class="text-sm font-medium transition-colors hover:text-primary"
 							>Login</a
@@ -138,7 +115,7 @@
 							<path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" />
 							<path d="M2 12h20" />
 						</svg>
-						The Curated Horizon
+						Horizon
 					</div>
 					<p class="max-w-md text-sm text-muted-foreground">
 						Discover extraordinary destinations and create unforgettable travel memories with our
@@ -180,7 +157,7 @@
 				</div>
 			</div>
 			<div class="mt-8 border-t pt-8 text-center text-sm text-muted-foreground">
-				<p>© 2026 The Curated Horizon. All rights reserved.</p>
+				<p>© 2026 Horizon. All rights reserved.</p>
 			</div>
 		</div>
 	</footer>

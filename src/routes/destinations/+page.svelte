@@ -3,6 +3,7 @@
 	import { api } from '$lib/api/client.js';
 	import { Drawer } from '$lib/components/ui/drawer';
 	import { getImageUrl } from '$lib/api/constants.js';
+	import { user } from '$lib/stores/auth.js';
 
 	let { data } = $props();
 
@@ -47,7 +48,7 @@
 	}
 </script>
 
-<svelte:head><title>Destinations | The Curated Horizon</title></svelte:head>
+<svelte:head><title>Destinations | Horizon</title></svelte:head>
 
 <div class="container mx-auto px-4 py-8">
 	<div class="mb-8 flex items-center justify-between">
@@ -57,7 +58,7 @@
 				Explore our curated collection of breathtaking destinations
 			</p>
 		</div>
-		{#if data.user?.role === 'admin'}
+		{#if $user?.role === 'admin'}
 			<button
 				onclick={() => (drawerOpen = true)}
 				class="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"

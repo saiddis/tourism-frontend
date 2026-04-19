@@ -379,8 +379,7 @@
 			<div class="container mx-auto px-4 text-center">
 				<h2 class="mb-4 font-heading text-2xl font-bold md:text-3xl">Ready to Explore?</h2>
 				<p class="mx-auto mb-6 max-w-xl text-primary-foreground/80">
-					Join thousands of travelers who have discovered their dream destinations with The Curated
-					Horizon.
+					Join thousands of travelers who have discovered their dream destinations with Horizon.
 				</p>
 				<a
 					href="/register"

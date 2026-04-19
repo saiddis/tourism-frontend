@@ -33,7 +33,7 @@
 	}
 </script>
 
-<svelte:head><title>Login | The Curated Horizon</title></svelte:head>
+<svelte:head><title>Login | Horizon</title></svelte:head>
 
 <div class="flex min-h-[calc(100vh-200px)] items-center justify-center py-12">
 	<div class="w-full max-w-md px-4">

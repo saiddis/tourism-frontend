@@ -39,13 +39,13 @@
 	}
 </script>
 
-<svelte:head><title>Register | The Curated Horizon</title></svelte:head>
+<svelte:head><title>Register | Horizon</title></svelte:head>
 
 <div class="flex min-h-[calc(100vh-200px)] items-center justify-center py-12">
 	<div class="w-full max-w-md px-4">
 		<div class="mb-8 text-center">
 			<h1 class="font-heading text-3xl font-bold">Create Your Account</h1>
-			<p class="mt-2 text-muted-foreground">Join The Curated Horizon and start exploring</p>
+			<p class="mt-2 text-muted-foreground">Join Horizon and start exploring</p>
 		</div>
 
 		<div class="rounded-lg border bg-card p-6">

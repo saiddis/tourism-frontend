@@ -1,11 +1,18 @@
-import { get } from 'svelte/store';
-import { user } from '$lib/stores/auth.js';
+import { browser } from '$app/environment';
 import { api } from '$lib/api/client.js';
-import { error } from '@sveltejs/kit';
+import { error, redirect } from '@sveltejs/kit';
 
 /** @type {import('./$types').PageLoad} */
 export async function load({ params }) {
-	const currentUser = get(user);
+	let currentUser = null;
+
+	if (browser) {
+		try {
+			currentUser = await api.users.me();
+		} catch {
+			// User not logged in - that's fine, they can still view the tour
+		}
+	}
 
 	try {
 		const [tour, reviews] = await Promise.all([

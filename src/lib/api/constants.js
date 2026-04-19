@@ -10,95 +10,95 @@ export function getImageUrl(url) {
 /** @type {Record<string, any>} */
 export const Endpoints = {
 	auth: {
-		register: '/auth/register',
-		login: '/auth/login',
-		refresh: '/auth/refresh',
-		logout: '/auth/logout'
+		register: '/api/auth/register',
+		login: '/api/auth/login',
+		refresh: '/api/auth/refresh',
+		logout: '/api/auth/logout'
 	},
 	users: {
-		list: '/users',
-		me: '/users/me',
-		updateMe: '/users/me',
-		uploadAvatar: '/users/me/avatar',
-		setAvatarUrl: '/users/me/avatar-url',
-		deposit: '/users/deposit',
+		list: '/api/users',
+		me: '/api/users/me',
+		updateMe: '/api/users/me',
+		uploadAvatar: '/api/users/me/avatar',
+		setAvatarUrl: '/api/users/me/avatar-url',
+		deposit: '/api/users/deposit',
 		/** @param {number|string} id */
-		get: (id) => `/users/${id}`
+		get: (id) => `/api/users/${id}`
 	},
 	destinations: {
-		list: '/destinations',
+		list: '/api/destinations',
 		/** @param {number|string} id */
-		get: (id) => `/destinations/${id}`,
-		create: '/destinations',
+		get: (id) => `/api/destinations/${id}`,
+		create: '/api/destinations',
 		/** @param {number|string} id */
-		delete: (id) => `/destinations/${id}`
+		delete: (id) => `/api/destinations/${id}`
 	},
 	tours: {
-		list: '/tours',
+		list: '/api/tours',
 		/** @param {number|string} id */
-		get: (id) => `/tours/${id}`,
-		create: '/tours',
-		createForProvider: '/providers/me/tours',
+		get: (id) => `/api/tours/${id}`,
+		create: '/api/tours',
+		createForProvider: '/api/providers/me/tours',
 		/** @param {number|string} id */
-		update: (id) => `/tours/${id}`,
+		update: (id) => `/api/tours/${id}`,
 		/** @param {number|string} id */
-		delete: (id) => `/tours/${id}`,
+		delete: (id) => `/api/tours/${id}`,
 		/** @param {number|string} id */
-		renew: (id) => `/tours/${id}/renew`,
+		renew: (id) => `/api/tours/${id}/renew`,
 		/** @param {number|string} tourId */
-		highlights: (tourId) => `/tours/${tourId}/highlights`,
+		highlights: (tourId) => `/api/tours/${tourId}/highlights`,
 		/** @param {number|string} tourId */
-		createHighlight: (tourId) => `/tours/${tourId}/highlights`,
+		createHighlight: (tourId) => `/api/tours/${tourId}/highlights`,
 		/** @param {number|string} tourId @param {number|string} highlightId */
-		deleteHighlight: (tourId, highlightId) => `/tours/${tourId}/highlights/${highlightId}`
+		deleteHighlight: (tourId, highlightId) => `/api/tours/${tourId}/highlights/${highlightId}`
 	},
 	bookings: {
-		list: '/bookings',
+		list: '/api/bookings',
 		/** @param {number|string} id */
-		get: (id) => `/bookings/${id}`,
-		create: '/bookings',
+		get: (id) => `/api/bookings/${id}`,
+		create: '/api/bookings',
 		/** @param {number|string} id */
-		delete: (id) => `/bookings/${id}`,
+		delete: (id) => `/api/bookings/${id}`,
 		/** @param {number|string} userId */
-		userBookings: (userId) => `/bookings/user/${userId}`,
+		userBookings: (userId) => `/api/bookings/user/${userId}`,
 		/** @param {number|string} id */
-		updateStatus: (id) => `/bookings/${id}/status`
+		updateStatus: (id) => `/api/bookings/${id}/status`
 	},
 	payments: {
 		/** @param {number|string} id */
-		get: (id) => `/payments/${id}`,
-		create: '/payments',
+		get: (id) => `/api/payments/${id}`,
+		create: '/api/payments',
 		/** @param {number|string} id */
-		updateStatus: (id) => `/payments/${id}/status`
+		updateStatus: (id) => `/api/payments/${id}/status`
 	},
 	reviews: {
-		create: '/reviews',
+		create: '/api/reviews',
 		/** @param {number|string} tourId */
-		tourReviews: (tourId) => `/reviews/tour/${tourId}`,
+		tourReviews: (tourId) => `/api/reviews/tour/${tourId}`,
 		/** @param {number|string} id */
-		delete: (id) => `/reviews/${id}`
+		delete: (id) => `/api/reviews/${id}`
 	},
 	providers: {
-		list: '/providers',
-		listActive: '/providers/active',
+		list: '/api/providers',
+		listActive: '/api/providers/active',
 		/** @param {number|string} id */
-		get: (id) => `/providers/${id}`,
+		get: (id) => `/api/providers/${id}`,
 		/** @param {number|string} userId */
-		getByUserId: (userId) => `/providers/user/${userId}`,
-		create: '/providers',
+		getByUserId: (userId) => `/api/providers/user/${userId}`,
+		create: '/api/providers',
 		/** @param {number|string} id */
-		update: (id) => `/providers/${id}`,
+		update: (id) => `/api/providers/${id}`,
 		/** @param {number|string} id */
-		toggleActive: (id) => `/providers/${id}/active`
+		toggleActive: (id) => `/api/providers/${id}/active`
 	},
 	providerApplications: {
-		submit: '/provider-applications',
-		getMine: '/provider-applications/me',
-		list: '/provider-applications',
+		submit: '/api/provider-applications',
+		getMine: '/api/provider-applications/me',
+		list: '/api/provider-applications',
 		/** @param {number|string} id */
-		accept: (id) => `/provider-applications/${id}/accept`,
+		accept: (id) => `/api/provider-applications/${id}/accept`,
 		/** @param {number|string} id */
-		reject: (id) => `/provider-applications/${id}/reject`
+		reject: (id) => `/api/provider-applications/${id}/reject`
 	}
 };
 

@@ -146,13 +146,13 @@
 			>
 				{#if data.tour.highlights && data.tour.highlights.length > 0}
 					<img
-						src={getImageSrc(data.tour.highlights[0].image_url)}
+						src={getImageUrl(data.tour.highlights[0].image_url)}
 						alt={data.tour?.name}
 						class="h-full w-full object-cover"
 					/>
 				{:else if data.destination?.image_url}
 					<img
-						src={getImageSrc(data.destination.image_url)}
+						src={getImageUrl(data.destination.image_url)}
 						alt={data.tour?.name}
 						class="h-full w-full object-cover"
 					/>
@@ -180,7 +180,7 @@
 						{#each data.tour.highlights as highlight}
 							<div class="relative aspect-square overflow-hidden rounded-lg">
 								<img
-									src={getImageSrc(highlight.image_url)}
+									src={getImageUrl(highlight.image_url)}
 									alt="Tour highlight"
 									class="h-full w-full object-cover"
 								/>

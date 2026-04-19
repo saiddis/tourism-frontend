@@ -6,6 +6,18 @@
 	const featuredDestinations = $derived(data.destinations?.slice(0, 4) || []);
 	const featuredTours = $derived(data.tours?.slice(0, 6) || []);
 
+	const API_BASE = $derived(import.meta.env.VITE_API_URL || '');
+
+	function getTourImageSrc(tour) {
+		if (tour.highlights && tour.highlights.length > 0 && tour.highlights[0].image_url) {
+			return getImageUrl(tour.highlights[0].image_url);
+		}
+		if (tour.destination_image_url) {
+			return getImageUrl(tour.destination_image_url);
+		}
+		return null;
+	}
+
 	function formatDate(dateStr) {
 		if (!dateStr) return '';
 		return new Date(dateStr).toLocaleDateString('en-US', {
@@ -248,7 +260,13 @@
 							class="group overflow-hidden rounded-lg border bg-card transition-shadow hover:shadow-lg"
 						>
 							<div class="relative aspect-video bg-muted">
-								{#if tour.destination_image_url}
+								{#if tour.highlights && tour.highlights.length > 0 && tour.highlights[0].image_url}
+									<img
+										src={getImageUrl(tour.highlights[0].image_url)}
+										alt={tour.name}
+										class="h-full w-full object-cover"
+									/>
+								{:else if tour.destination_image_url}
 									<img
 										src={getImageUrl(tour.destination_image_url)}
 										alt={tour.name}
